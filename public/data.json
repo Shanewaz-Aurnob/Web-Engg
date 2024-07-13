@@ -1,0 +1,143 @@
+ [
+    {
+      "id":"1",
+      "course_name": "Algorithm",
+      "sem" : "4th semester",
+      "program": "B.Sc.",
+      "code": "ALG101",
+      "total_held_classes": 45,
+      "students": [
+        {
+          "name": "Khadiza Jarin Roza",
+          "student_id": 20701043,
+          "ctma_marks": [85, 90, 88],
+          "attended": 26
+        },
+        {
+          "name": "Jane Smith",
+          "student_id": 20701080,
+          "ctma_marks": [80, 82, 85],
+          "attended": 28
+        },
+        {
+          "name": "David Johnson",
+          "student_id": 20701099,
+          "ctma_marks": [75, 78, 80],
+          "attended": 35
+        }
+      ]
+    },
+    {
+      "id":"2",
+      "course_name": "Database",
+      "sem" : "4th semester",
+      "program": "B.Sc.",
+      "code": "DBS201",
+      "total_held_classes": 35,
+      "students": [
+        {
+          "name": "Khadiza Jarin Roza",
+          "student_id": 20701043,
+          "ctma_marks": [88, 90, 92],
+          "attended": 30
+        },
+        {
+          "name": "Jane Smith",
+          "student_id": 20701080,
+          "ctma_marks": [82, 85, 87],
+          "attended": 29
+        },
+        {
+          "name": "David Johnson",
+          "student_id": 20701099,
+          "ctma_marks": [78, 80, 85],
+          "attended": 26
+        }
+      ]
+    },
+    {
+       
+      "course_name": "Mobile App",
+      "sem" : "6th semester",
+      "program": "B.Sc.",
+      "code": "MOB301",
+      "total_held_classes": 38,
+      "students": [
+        {
+          "name": "Michael Lee",
+          "student_id": 20701046,
+          "ctma_marks": [90, 92, 95],
+          "attended": 38
+        },
+        {
+          "name": "Sophia Kim",
+          "student_id": 20701046,
+          "ctma_marks": [85, 88, 90],
+          "attended": 37
+        },
+        {
+          "name": "Oliver Garcia",
+          "student_id": 20701046,
+          "ctma_marks": [78, 80, 82],
+          "attended": 26
+        }
+      ]
+    },
+    {
+      "id":"5",
+      "course_name": "technical Writing",
+      "program": "B.Sc.",
+      "sem" : "6th semester",
+      "code": "TOC301",
+      "total_held_classes": 41,
+      "students": [
+        {
+          "name": "Michael Lee",
+          "student_id": 20701046,
+          "ctma_marks": [90, 92, 95],
+          "attended": 20
+        },
+        {
+          "name": "Sophia Kim",
+          "student_id": 20701046,
+          "ctma_marks": [85, 88, 90],
+          "attended": 41
+        },
+        {
+          "name": "Oliver Garcia",
+          "student_id": 20701046,
+          "ctma_marks": [78, 80, 82],
+          "attended": 40
+        }
+      ]
+    },
+    {
+      "id":"4",
+      "course_name": "Alu Course",
+      "sem" : "2nd semester",
+      "program": "M.Sc.",
+      "code": "AlU420",
+      "total_held_classes": 41,
+      "students": [
+        {
+          "name": "Michael Lee",
+          "student_id": 20701046,
+          "ctma_marks": [90, 92, 95],
+          "attended": 20
+        },
+        {
+          "name": "Sophia Kim",
+          "student_id": 20701046,
+          "ctma_marks": [85, 88, 90],
+          "attended": 41
+        },
+        {
+          "name": "Oliver Garcia",
+          "student_id": 20701046,
+          "ctma_marks": [78, 80, 82],
+          "attended": 40
+        }
+      ]
+    }
+  ]
+

@@ -1,0 +1,60 @@
+[
+          {
+            "program": "B.Sc",
+            "sem" : "1st semester",
+            "isActive" : "false"
+          },
+          {
+            "program": "B.Sc",
+            "sem" : "2nd semester",
+            "isActive" : "false"
+          },
+          {
+            "program": "B.Sc",
+            "sem" : "3rd semester",
+            "isActive" : "false"
+          },
+          {
+            "program": "B.Sc",
+            "sem" : "4th semester",
+            "isActive" : "true"
+          },
+          {
+            "program": "B.Sc",
+            "sem" : "5th semester",
+            "isActive" : "false"
+          },
+          {
+            "program": "B.Sc",
+            "sem" : "6th semester",
+            "isActive" : "true"
+          },
+          {
+            "program": "B.Sc",
+            "sem" : "7th semester",
+            "isActive" : "false"
+          },
+          {
+            "program": "B.Sc",
+            "sem" : "8th semester",
+            "isActive" : "false"
+          },
+          {
+            "program": "M.Sc",
+            "sem" : "1st semester",
+            "isActive" : "false"
+          },
+          {
+            "program": "M.Sc",
+            "sem" : "2nd semester",
+            "isActive" : "true"
+          },
+          {
+            "program": "M.Sc",
+            "sem" : "3rd semester",
+            "isActive" : "false"
+          }
+]
+     
+
+  
