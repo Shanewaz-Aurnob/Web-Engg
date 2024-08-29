@@ -1,0 +1,3 @@
+[submodule "wels-components"]
+	path = wels-components
+	url = https://github.com/voidCounter/wels-ui.git
