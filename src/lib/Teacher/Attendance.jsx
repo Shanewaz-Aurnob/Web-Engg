@@ -24,10 +24,11 @@ const Attendance = () => {
   const courseCode = 'CSE-413';
 
   useEffect(() => {
-    fetch('data.json')
+    fetch('http://localhost:5000/api/attendance/teacher')
       .then((res) => res.json())
       .then((data) => {
-        setCourses(data);
+        setCourses(data.data);
+        console.log(data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -54,9 +55,9 @@ const Attendance = () => {
     setSessionDetails(newSessionDetails);
     localStorage.setItem('sessionDetails', JSON.stringify(newSessionDetails));
 
-    const qrData = `${newSessionDetails.courseName}|${newSessionDetails.courseCode}|${newSessionDetails.date}|${newSessionDetails.time}`;
-    setQrCodeData(qrData);
-    localStorage.setItem('qrCodeData', qrData); // Store QR code data in localStorage
+    const randomNumber = Math.floor(Math.random() * 1000000); // generates a random number between 0 and 999999
+    const qrData = `${newSessionDetails.courseName}|${newSessionDetails.courseCode}|${newSessionDetails.date}|${newSessionDetails.time}|${randomNumber}`;
+    setQrCodeData(qrData); // Store QR code data in localStorage
 
     startCountdown(minutes);
     console.log("Session created with data:", formData);
@@ -79,7 +80,7 @@ const Attendance = () => {
             <Input
               type="text"
               id="courseName"
-              defaultValue={course.course_name}
+              defaultValue={course.course_title}
               readOnly
               name="course_name"
               className="mr-2"
@@ -87,7 +88,27 @@ const Attendance = () => {
             <Input
               type="text"
               id="courseCode"
-              defaultValue={course.code}
+              defaultValue={course.course_code}
+              readOnly
+              name="course_code"
+            />
+          </div>
+        </div>
+        <div>
+          <label htmlFor="courseDetails">Session & Semester</label>
+          <div className="mt-1 flex">
+            <Input
+              type="text"
+              id="courseName"
+              defaultValue={course.course_title}
+              readOnly
+              name="course_name"
+              className="mr-2"
+            />
+            <Input
+              type="text"
+              id="courseCode"
+              defaultValue={course.semester}
               readOnly
               name="course_code"
             />
@@ -126,7 +147,7 @@ const Attendance = () => {
             />
           </div>
         </div>
-        <button type="submit">
+        <button type="submit" className="bg-[#0C4A6E] text-white py-2 px-4 rounded-md font-semibold">
           Create Session
         </button>
       </form>
@@ -235,9 +256,12 @@ const Attendance = () => {
               <p className="text-xl font-semibold">Course Code : {sessionDetails.courseCode}</p>
               <p className="text-xl font-semibold">Date : {sessionDetails.date}</p>
               <p className="text-xl font-semibold">Starting Time: {sessionDetails.time}</p>
-              <p className="text-xl font-semibold">Time left: {formatTime(countdown)}</p>
+              <p className="text-xl font-bold">End Time: {new Date(Date.now() + countdown * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p>
+              <p className="text-xl font-bold">Time left: {formatTime(countdown)}</p>
             </div>
-            <div className="flex justify-center items-center"><QRCode className="w-64" size={240} fgColor={'#66798F'} value={qrCodeData} /></div>
+            <div className="flex justify-center items-center">
+              <QRCode className="w-64" size={240} fgColor={'#66798F'} value={qrCodeData} />
+              </div>
           </div>
           <div>
             <hr className="border-2 mt-8" style={{ borderColor: '#CCCCCC' }} />
@@ -271,11 +295,11 @@ const Attendance = () => {
               {courses.map((course, index) => (
                 <TableRow key={index}>
                   <TableCell className="text-center">{index + 1}</TableCell>
-                  <TableCell className="text-center">{course.course_name}</TableCell>
-                  <TableCell className="text-center">{course.code}</TableCell>
-                  <TableCell className="text-center">{course.program}</TableCell>
-                  <TableCell className="text-center">Theory</TableCell>
-                  <TableCell className="text-center">{course.sem}</TableCell>
+                  <TableCell className="text-center">{course.course_title}</TableCell>
+                  <TableCell className="text-center">{course.course_code}</TableCell>
+                  <TableCell className="text-center">{course.program_abbr}</TableCell>
+                  <TableCell className="text-center">{course.course_type}</TableCell>
+                  <TableCell className="text-center">{course.semester}</TableCell>
                   <TableCell className="text-center">
                     <Link to={`/courseDetails/${course.id}`}>
                       <Button>View details</Button>
@@ -293,7 +317,7 @@ const Attendance = () => {
                       </PopoverTrigger>
                       {!sessionActive && (
                         <PopoverContent
-                          style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-200%, -100%)' }}
+                          style={{ position: 'absolute', top: '-50%', left: '50%', transform: 'translate(-200%, -80%)' }}
                           className="w-96 shadow-slate-950 shadow-2xl"
                         >
                           <CreateSessionForm course={course} onSubmit={onSubmit} />
