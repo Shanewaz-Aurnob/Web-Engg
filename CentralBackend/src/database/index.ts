@@ -8,6 +8,8 @@ import * as ResultProcessingTables from "../types/ResultProcessingTables";
 import * as ExamRemunerationTables from "../types/ExamRemunerationTables";
 
 import * as CertificateWithdrawalTables from "../types/CertificateWithdrawalTables";
+import * as AttendanceSystemTables from "../types/AttendanceSystemTables";
+
 import * as MeetingManagementTables from "../types/MeetingManagementTable";
 import * as StudentInformationTables from "../types/StudentInformatationTables";
 
@@ -106,6 +108,9 @@ export interface Database {
   // CU | SoS
   SoS_User: CoreTables.SoS_UserTable;
   SoS_Message: CoreTables.SoS_MessageTable;
+
+  //Attendance System
+  Create_Class: AttendanceSystemTables.CreateClass;
 }
 
 export type TableName =
@@ -175,7 +180,9 @@ export type TableName =
   | "Course_Teacher"
   | "Catm_Mark"
   | "SoS_User"
-  | "SoS_Message";
+  | "SoS_Message"
+  "Create_Class"
+  ;
 
 const dialect = new MysqlDialect({
   pool: async () => createPool(AdminCreds),

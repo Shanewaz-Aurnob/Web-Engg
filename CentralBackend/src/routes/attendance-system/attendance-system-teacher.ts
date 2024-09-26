@@ -28,6 +28,49 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
       }
   });
 
+  const createClassReqBody = z.object({
+    course_id: z.number(),
+    session: z.string(),
+    class_startTime: z.string().time(),
+    duration: z.number(),
+    secret_code: z.string(),
+    class_startDate: z.string().date()
+  });
+  
+  attendanceSystemTeacherRouter.post("/create-session", async (req, res) => {
+    try {
+      const { course_id, session, class_startTime, duration, secret_code, class_startDate } = createClassReqBody.parse(req.body);
+  
+        await db
+          .insertInto("Create_Class")
+          .values({
+            course_id: course_id,
+            session: session,
+            class_startTime: class_startTime,
+            duration: duration,
+            secret_code: secret_code,
+            class_startDate: class_startDate
+        })
+        .executeTakeFirst();
+  
+        
+  
+      // Return the session id
+      res.status(200).send({
+        message: "Data Inserted Successfully in Create_Class Table.",
+      });
+    } catch (error) {
+      var typeError: z.ZodError | undefined;
+      if (error instanceof z.ZodError) {
+        typeError = error as z.ZodError;
+        return res.status(400).json({
+          name: "Invalid data type.",
+          message: JSON.parse(typeError.message),
+        });
+      }
+      return res.status(400).json({ message: "Invalid request body", error });
+    }
+  });
 
   
   
