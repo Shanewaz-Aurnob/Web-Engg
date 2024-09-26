@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Exam Activity Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Exam Activity Endpoint</h1>
+            <h2 class="text-2xl font-bold mt-6">/exam-activity</h2>
+            <p class="text-lg mt-2">Endpoint to manage the exam activities for billing, including retrieval, submission, and update.</p>
+            <p class="text-base mt-2">Below are the available endpoints:</p>
+
+            <ul class="list-disc list-inside mt-4">
+                <li><strong>GET /</strong>: Retrieve paginated list of exam activities for billing.</li>
+                <li><strong>POST /</strong>: Submit a new exam activity for billing.</li>
+                <li><strong>PUT /</strong>: Update an existing exam activity for billing.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /exam-activity</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>fetch('http://bike-csecu.com:5000/api/cuers/exam-activity',{
+method: 'GET',
+headers: {
+    'Authorization': `Bearer ${sessionId}`
+    'Content-Type': 'application/json',
+    }                
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code>
+                </pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>{
+    "total_records": 56,
+    "total_data": 10,
+    "data": [
+    {
+        "rule_id": 7,
+        "bill_sector_id": 3,
+        "exam_activity_type_id": 4,
+        "quantity_initial": 6,
+        "quantity_final": 8,
+        "exam_bill": 70,
+        "min_exam_bill": 70,
+        "factor": "ঘণ্টা",
+        "valid_from": "2019-01-01T00:00:00.000Z"
+      },
+      {
+        "rule_id": 8,
+        "bill_sector_id": 3,
+        "exam_activity_type_id": 5,
+        "quantity_initial": 0,
+        "quantity_final": 1000000,
+        "exam_bill": 250,
+        "min_exam_bill": 250,
+        "factor": "ঘণ্টা",
+        "valid_from": "2019-01-01T00:00:00.000Z"
+      },
+      {
+        "rule_id": 9,
+        "bill_sector_id": 4,
+        "exam_activity_type_id": 4,
+        "quantity_initial": 0,
+        "quantity_final": 1000000,
+        "exam_bill": 450,
+        "min_exam_bill": 450,
+        "factor": "ছাত্রের সংখ্যা",
+        "valid_from": "2019-01-01T00:00:00.000Z"
+      }
+      ...
+      ],
+      "page_count": 6,
+      "first_page": 1,
+      "next": {
+        "page": 2,
+        "limit": 10
+      },
+      "previous": null
+    }</code></pre>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>

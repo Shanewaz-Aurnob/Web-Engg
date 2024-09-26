@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ERP Web server | API Doc | Login Endpoint</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    </head>
+    <body class="bg-slate-200">
+        <main class="flex flex-col gap-2 p-4">
+            <h1 class="font-bold text-4xl underline decoration-4 decoration-green-500">
+                Login Endpoint
+            </h1>
+            <div class="flex flex-row gap-2 items-center">
+                <h2 class="text-2xl font-bold underline decoration-4 decoration-green-500">URL: </h2>
+                <p class="font-bold text-xl text-orange-500 bg-slate-800 rounded-full p-1">http://bike-csecu.com:5000/api/login</p>
+            </div>
+            <div class="flex flex-row gap-2 items-center">
+                <h2 class="text-2xl font-bold underline decoration-4 decoration-green-500">Method: </h2>
+                <p class="font-bold text-xl text-orange-500 bg-slate-800 rounded-full p-1">POST</p>
+            </div>
+            <div class="flex flex-row gap-2 items-center">
+                <h2 class="text-2xl font-bold underline decoration-4 decoration-green-500">Request Body: </h2>
+                <p class="font-bold text-xl text-orange-500 bg-slate-800 rounded-full p-1">JSON</p>
+            </div>
+            <pre class="prettyprint linenums">
+                {
+                    email: <b>string</b>, // Not nullable. Must follow standard email format.
+                    password: <b>string</b> // Not nullable. Minimum 8 characters
+                }
+            </pre>
+
+            <div class="flex flex-row gap-2 items-center">
+                <h2 class="text-2xl font-bold underline decoration-4 decoration-green-500">Authorization: </h2>
+                <p class="font-bold text-xl text-orange-500 bg-slate-800 rounded-full p-1">None</p>
+            </div>
+            <div class="flex flex-row gap-2 items-center">
+                <h2 class="text-2xl font-bold underline decoration-4 decoration-green-500">Content Type: </h2>
+                <p class="font-bold text-xl text-orange-500 bg-slate-800 rounded-full p-1">application/json</p>
+            </div>
+
+            <div class="flex flex-row gap-2 items-center">
+                <h2 class="text-2xl font-bold underline decoration-4 decoration-green-500">Response: </h2>
+                <p class="font-bold text-xl text-orange-500 bg-slate-800 rounded-full p-1">JSON</p>
+            </div>
+            <pre class="prettyprint linenums">
+                {
+                    "message": <b>string</b>,
+                    "data": {
+                        "uid": <b>number</b>,
+                    }
+                }
+            </pre>
+
+            
+        </main>
+    </body>
+</html>

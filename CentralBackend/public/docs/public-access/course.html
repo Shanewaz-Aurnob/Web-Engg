@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web server | Course Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center py-4">
+            <a class="font-bold text-lg md:text-2xl hover:underline" href="/">CSECU Web server</a>
+            <span class="flex-grow"></span>
+            <a class="font-bold text-md md:text-xl hover:underline" href="#">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main>
+        <h1 class="text-3xl font-bold underline mb-4">Course Endpoints</h1>
+
+        <section id="get-course-by-id">
+            <h2 class="text-2xl font-bold underline mb-2">1. GET /course/:id</h2>
+            <p class="text-lg text-pretty mb-4">Retrieve a course by its ID.</p>
+            <h3 class="text-xl font-bold mb-2">Parameters</h3>
+            <ul class="list-disc list-inside mb-4">
+                <li><b>:id</b> - <span class="italic">integer</span> - The ID of the course to retrieve.</li>
+            </ul>
+            <h3 class="text-xl font-bold mb-2">Response</h3>
+            <p class="text-lg text-pretty mb-4">Returns the course information including the associated department.</p>
+            <div class="bg-gray-100 p-4 rounded-md">
+                <pre><code class="json">{
+  "course_id": 1,
+  "course_code": "CSCI101",
+  "course_title": "Introduction to Computer Science",
+  "credit": 3,
+  "course_type": "Theory",
+  "exam_minutes": 90,
+  "department": {
+    "department_id": 1,
+    "department_name": "Computer Science"
+  }
+}</code></pre>
+            </div>
+            <h3 class="text-xl font-bold mt-4 mb-2">Example Request (JavaScript Fetch)</h3>
+            <pre><code class="javascript">fetch('http://bike-csecu.com:5000/api/course/1')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+        </section>
+
+        <section id="update-course">
+            <h2 class="text-2xl font-bold underline mb-2">2. PUT /course/:id</h2>
+            <p class="text-lg text-pretty mb-4">Update details of a course.</p>
+            <h3 class="text-xl font-bold mb-2">Parameters</h3>
+            <ul class="list-disc list-inside mb-4">
+                <li><b>:id</b> - <span class="italic">integer</span> - The ID of the course to update.</li>
+            </ul>
+            <h3 class="text-xl font-bold mb-2">Request Body</h3>
+            <p class="text-lg text-pretty mb-4">JSON object containing fields to update.</p>
+            <div class="bg-gray-100 p-4 rounded-md">
+                <pre><code class="json">{
+  "department_id": 2,
+  "course_code": "CSCI102",
+  "course_title": "Advanced Computer Science",
+  "credit": 4,
+  "course_type": "Project",
+  "exam_minutes": 120
+}</code></pre>
+            </div>
+            <h3 class="text-xl font-bold mt-4 mb-2">Response</h3>
+            <p class="text-lg text-pretty mb-4">Returns a success message upon updating the course.</p>
+            <div class="bg-gray-100 p-4 rounded-md">
+                <pre><code class="json">{
+  "message": "Course updated successfully."
+}</code></pre>
+            </div>
+            <h3 class="text-xl font-bold mt-4 mb-2">Example Request (JavaScript Fetch)</h3>
+            <pre><code class="javascript">const courseId = 1;
+const updatedCourse = {
+  department_id: 2,
+  course_code: "CSCI102",
+  course_title: "Advanced Computer Science",
+  credit: 4,
+  course_type: "Project",
+  exam_minutes: 120
+};
+
+fetch(`http://bike-csecu.com:5000/api/course/${courseId}`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer your_token_here'
+  },
+  body: JSON.stringify(updatedCourse)
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+        </section>
+
+        <section id="get-all-courses">
+            <h2 class="text-2xl font-bold underline mb-2">3. GET /course</h2>
+            <p class="text-lg text-pretty mb-4">Retrieve a list of all courses.</p>
+            <h3 class="text-xl font-bold mb-2">Response</h3>
+            <p class="text-lg text-pretty mb-4">Returns a paginated list of courses.</p>
+            <div class="bg-gray-100 p-4 rounded-md">
+                <pre><code class="json">[
+  {
+    "course_id": 1,
+    "course_code": "CSCI101",
+    "course_title": "Introduction to Computer Science",
+    "credit": 3,
+    "course_type": "Theory",
+    "exam_minutes": 90,
+    "department_id": 1
+  },
+  {
+    "course_id": 2,
+    "course_code": "CSCI102",
+    "course_title": "Advanced Computer Science",
+    "credit": 4,
+    "course_type": "Project",
+    "exam_minutes": 120,
+    "department_id": 2
+  }
+]</code></pre>
+            </div>
+            <h3 class="text-xl font-bold mt-4 mb-2">Example Request (JavaScript Fetch)</h3>
+            <pre><code class="javascript">fetch('http://bike-csecu.com:5000/api/course')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+        </section>
+
+        <section id="create-course">
+            <h2 class="text-2xl font-bold underline mb-2">4. POST /course</h2>
+            <p class="text-lg text-pretty mb-4">Create a new course.</p>
+            <h3 class="text-xl font-bold mb-2">Request Body</h3>
+            <p class="text-lg text-pretty mb-4">JSON object containing course details.</p>
+            <div class="bg-gray-100 p-4 rounded-md">
+                <pre><code class="json">{
+  "department_id": 2,
+  "course_code": "CSCI102",
+  "course_title": "Advanced Computer Science",
+  "credit": 4,
+  "course_type": "Project",
+  "exam_minutes": 120
+}</code></pre>
+            </div>
+            <h3 class="text-xl font-bold mt-4 mb-2">Response</h3>
+            <p class="text-lg text-pretty mb-4">Returns the newly created course ID and a success message.</p>
+            <div class="bg-gray-100 p-4 rounded-md">
+                <pre><code class="json">{
+  "course_id": 3,
+  "message": "Course created successfully"
+}</code></pre>
+            </div>
+            <h3 class="text-xl font-bold mt-4 mb-2">Example Request (JavaScript Fetch)</h3>
+            <pre><code class="javascript">const newCourse = {
+  department_id: 2,
+  course_code: "CSCI102",
+  course_title: "Advanced Computer Science",
+  credit: 4,
+  course_type: "Project",
+  exam_minutes: 120
+};
+
+fetch('http://bike-csecu.com:5000/api/course', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer your_token_here'
+  },
+  body: JSON.stringify(newCourse)
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+        </section>
+    </main>
+</body>
+
+</html>

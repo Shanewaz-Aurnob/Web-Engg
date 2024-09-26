@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Courses in Semester Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Endpoint: /course-semester</h1>
+            <p class="text-lg mt-2">Retrieve information about courses offered in different semesters.</p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Available Endpoints</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">1. GET /course-semester/</h3>
+                <p class="text-lg">Retrieve a list of courses offered in various semesters.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Query Parameters:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>page</code>: Page number for pagination (optional)</li>
+                            <li><code>limit</code>: Number of results per page (optional)</li>
+                            <li><code>sort</code>: Sort courses by a specific field (optional)</li>
+                            <li><code>filter</code>: Apply filters to narrow down results (optional)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns a paginated list of courses in semesters.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /course-semester/</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('http://bike-csecu.com:5000/api/course-semester?page=1&limit=10')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "courses_in_semester": [
+    {
+      "course_id": 1,
+      "course_name": "Introduction to Computer Science",
+      "academic_session_id": 1,
+      "semester": "Fall 2023",
+      // Other course details
+    },
+    {
+      "course_id": 2,
+      "course_name": "Data Structures",
+      "academic_session_id": 1,
+      "semester": "Fall 2023",
+      // Other course details
+    },
+    // More courses...
+  ],
+  "pagination": {
+    "totalPages": 3,
+    "currentPage": 1,
+    "nextPage": 2,
+    "prevPage": null
+  }
+}</code></pre>
+            </article>
+        </section>
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold">Additional Information</h2>
+            <p class="text-lg mt-2">The <code>/course-semester</code> endpoint provides a list of courses offered in various academic sessions and semesters. For pagination, use the <code>page</code> and <code>limit</code> query parameters to navigate through the results. You can also sort and filter the courses using the respective query parameters. Contact support for any issues related to the courses in semester endpoint.</p>
+        </section>
+    </main>
+</body>
+
+</html>

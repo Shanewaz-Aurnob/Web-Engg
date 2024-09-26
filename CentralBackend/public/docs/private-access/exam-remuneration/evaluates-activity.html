@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Evaluates Exam Activity Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Evaluates Exam Endpoint</h1>
+            <h2 class="text-2xl font-bold mt-6">/evaluates-activity</h2>
+            <p class="text-lg mt-2">Endpoint to manage exam activities performed by the teachers, including retrieval, submission, and update.</p>
+            <p class="text-base mt-2">Below are the available endpoints:</p>
+
+            <ul class="list-disc list-inside mt-4">
+                <li><strong>GET /</strong>: Retrieve exam_id and related data of the teacher participating in exam related tasks.</li>
+                <li><strong>GET /:exam_id</strong>: Retrieve factored data of all exam activities performed by the teachers for the specified exam_id.</li>
+                <li><strong>POST /</strong>: Submit a new exam activity performed by a teacher.</li>
+                <li><strong>PUT /:activity_id</strong>: Update an existing exam activity performed by a teacher.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /evaluates-activity</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>fetch('http://bike-csecu.com:5000/api/cuers/evaluates-activity',{
+method: 'GET',
+headers: {
+    'Authorization': `Bearer ${sessionId}`
+    'Content-Type': 'application/json',
+    }                
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code>
+                </pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>{
+    "exam_data": [
+      {
+        "exam_id": 4,
+        "teacher_id": 5013,
+        "role": "Chairman",
+        "formation_date": "2019-11-01T00:33:00.000Z",
+        "department_id": 1,
+        "academic_session_id": 20180801,
+        "exam_name": "bsc",
+        "exam_centre": "CU",
+        "exam_session": "2019",
+        "exam_end_date": "2020-02-01T16:00:30.000Z",
+        "exam_start_date": "2020-01-01T17:17:10.000Z",
+        "is_result_submitted": 1,
+        "result_submit_date": "2020-06-01T16:00:45.000Z",
+        "committee_created": 0
+      }
+    ]
+  }</code></pre>
+            </article>
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /evaluates-activity/:exam_id</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>fetch('http://bike-csecu.com:5000/api/cuers/evaluates-activity/4',{
+method: 'GET',
+headers: {
+    'Authorization': `Bearer ${sessionId}`
+    'Content-Type': 'application/json',
+    }                
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code>
+                </pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>{
+    "factored_data": [
+      {
+        "academic_session_id": 20180801,
+        "session": "2018-19",
+        "semester": 8,
+        "activity_id": 1,
+        "exam_activity_type_id": 1,
+        "teacher_id": 5013,
+        "course_id": 1215,
+        "exam_id": 4,
+        "exam_session": "2019",
+        "bill_sector_name": "অনার্স/মাস্টার্স",
+        "bill_sector_id": 10,
+        "last_modified": "2024-07-13T22:27:43.000Z",
+        "factor_information": [
+          {
+            "factor_id": 1,
+            "activity_id": 1,
+            "factor": "অর্ধ/পূর্ণ",
+            "quantity": 1
+          },
+          {
+            "factor_id": 2,
+            "activity_id": 1,
+            "factor": "ঘণ্টা",
+            "quantity": 4
+          }
+        ]
+      },
+      {
+        "academic_session_id": 20180801,
+        "session": "2018-19",
+        "semester": 8,
+        "activity_id": 2,
+        "exam_activity_type_id": 1,
+        "teacher_id": 5013,
+        "course_id": 1215,
+        "exam_id": 4,
+        "exam_session": "2019",
+        "bill_sector_name": "টিউটোরিয়াল",
+        "bill_sector_id": 2,
+        "last_modified": "2024-07-10T21:24:21.000Z",
+        "factor_information": [
+          {
+            "factor_id": 3,
+            "activity_id": 2,
+            "factor": "পরীক্ষার সংখ্যা",
+            "quantity": 3
+          }
+        ]
+      }
+      ...
+    ]
+}</code></pre>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>

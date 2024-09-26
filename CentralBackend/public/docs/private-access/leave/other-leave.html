@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Other Leave Application Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Other Leave Application Endpoint</h1>
+            <p class="text-lg mt-2">Endpoints to manage other leave applications, including retrieval and submission.</p>
+            <p class="text-base mt-2">Below are the available endpoints:</p>
+
+            <ul class="list-disc list-inside mt-4">
+                <li><strong>GET /</strong>: Retrieve paginated list of other leave applications.</li>
+                <li><strong>POST /add</strong>: Submit a new other leave application.</li>
+            </ul>
+        </section>
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold">Request Body Schema</h2>
+            <p class="text-lg mt-2">Schema for the request body when adding an other leave application:</p>
+
+            <pre class="bg-gray-100 p-4 mt-4 rounded-md"><code>
+{
+    "applicant_id": string,
+    "attachments": string | null,
+    "designation": string,
+    "duration": number,
+    "final_application": string | null,
+    "leave_ground": string | null,
+    "leave_start_date": string (date in ISO format),
+    "my_application_chairman": string | null,
+    "nature_of_leave": string,
+    "salary_acknowledgement": number | null,
+    "signature": string | null,
+    "station_leaving_permission": string | null
+}
+            </code></pre>
+
+            <p class="text-base mt-4">Ensure all fields adhere to the specified data types and formats.</p>
+        </section>
+    </main>
+</body>
+
+</html>

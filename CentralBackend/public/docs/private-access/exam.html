@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Exam Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Endpoint: /exam</h1>
+            <p class="text-lg mt-2">Access information about exams including details about specific exams and filtering options.</p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Available Endpoints</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">1. GET /exam/</h3>
+                <p class="text-lg">Retrieve a list of all exams. Data can be filtered using query parameters.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Query Parameters:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>page</code>: Page number for pagination (optional)</li>
+                            <li><code>limit</code>: Number of results per page (optional)</li>
+                            <li><code>sort</code>: Sort exams by a specific field (optional)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns a paginated list of exams.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /exam/</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/exam', {
+  method: 'GET'
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "exams": [
+    {
+      "exam_id": 1,
+      "title": "Midterm Exam",
+      "department_id": 1,
+      "academic_session_id": 2,
+      "date": "2024-05-15T00:00:00.000Z",
+      // Other fields...
+    },
+    {
+      "exam_id": 2,
+      "title": "Final Exam",
+      "department_id": 2,
+      "academic_session_id": 3,
+      "date": "2024-06-20T00:00:00.000Z",
+      // Other fields...
+    }
+    // More exams...
+  ],
+  "pagination": {
+    "totalPages": 2,
+    "currentPage": 1,
+    "nextPage": 2,
+    "prevPage": null
+  }
+}</code></pre>
+            </article>
+        </section>
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold">Additional Information</h2>
+            <p class="text-lg mt-2">The <code>/exam</code> endpoint provides access to exam records, including information such as the exam title, associated department, academic session, and date. Use query parameters like <code>page</code> and <code>limit</code> for pagination and <code>sort</code> for sorting results. Contact support for any issues related to exam endpoints.</p>
+        </section>
+    </main>
+</body>
+
+</html>

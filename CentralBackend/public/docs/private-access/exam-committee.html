@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Exam Committee Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Endpoint: /exam-committee</h1>
+            <p class="text-lg mt-2">Access information about the exam committee, including details on specific committee members.</p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Available Endpoints</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">1. GET /exam-committee/</h3>
+                <p class="text-lg">Retrieve a list of all exam committee members. Data can be filtered using query parameters.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns a paginated list of exam committee members.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">2. GET /exam-committee/:id</h3>
+                <p class="text-lg">Retrieve details of a specific exam committee member by their ID. This endpoint is restricted to users with Teacher roles.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Parameters:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>id</code>: Teacher ID (integer)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns exam committee member details.</li>
+                            <li><strong>Unauthorized (401):</strong> If the user is not authenticated.</li>
+                            <li><strong>Forbidden (403):</strong> If the user does not have the necessary permissions.</li>
+                            <li><strong>Not Found (404):</strong> If the exam committee member with the given ID does not exist.</li>
+                            <li><strong>Invalid Data Type (400):</strong> If the provided ID is not a number.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /exam-committee/</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/exam-committee', {
+  method: 'GET'
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "exam_committee": [
+    {
+      "committee_id": 1,
+      "teacher_id": 10,
+      "first_name": "Dr. Jane",
+      "last_name": "Doe",
+      "email": "jane.doe@example.com",
+      "department": "Computer Science",
+      "university": "CSECU"
+      // Other fields...
+    },
+    // More committee members...
+  ],
+  "pagination": {
+    "totalPages": 3,
+    "currentPage": 1,
+    "nextPage": 2,
+    "prevPage": null
+  }
+}</code></pre>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /exam-committee/10</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/exam-committee/10', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer <token>'
+  }
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "committee_id": 1,
+  "teacher_id": 10,
+  "first_name": "Dr. Jane",
+  "last_name": "Doe",
+  "email": "jane.doe@example.com",
+  "department": "Computer Science",
+  "university": "CSECU"
+  // Other fields...
+}</code></pre>
+            </article>
+        </section>
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold">Additional Information</h2>
+            <p class="text-lg mt-2">The <code>/exam-committee</code> endpoint allows access to exam committee records. It provides information such as the committee member’s name, email, department, and associated university. Contact support for any issues related to the exam committee endpoints.</p>
+        </section>
+    </main>
+</body>
+
+</html>

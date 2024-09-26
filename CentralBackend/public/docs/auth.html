@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Authentication Endpoints</title>
+    <link rel="stylesheet" href="../styles/index.css" />
+    <style>
+        /* Additional styles for code and endpoint details */
+        pre,
+        code {
+            background-color: #F5F5F5;
+            padding: 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+        }
+
+        h3 {
+            color: #5E3EA1;
+            font-size: 1.25em;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            color: #4CAF50;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .endpoint-method {
+            font-weight: bold;
+            color: #5E3EA1;
+        }
+
+        .endpoint-details {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="m-container">
+            <a href="/">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main>
+        <h1>Authentication Endpoints</h1>
+
+        <div class="endpoint-details">
+            <h3>/login</h3>
+            <p><span class="endpoint-method">Method:</span> POST</p>
+            <p><span class="endpoint-method">Body:</span></p>
+            <pre><code>
+{
+    "email": "string (valid email)",
+    "password": "string (minimum 8 characters)"
+}
+            </code></pre>
+
+            <h4>Example Request using fetch()</h4>
+
+            <pre><code class="language-javascript">
+const loginUrl = 'http://bike-csecu:5000/api/login';
+
+const loginData = {
+    email: 'user@example.com',
+    password: 'password123'
+};
+
+fetch(loginUrl, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(loginData)
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+})
+.then(data => {
+    console.log('Success:', data);
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+            </code></pre>
+
+            <h4>Examples:</h4>
+
+            <h5>Invalid credentials (403)</h5>
+            <pre><code>
+{
+    "message": "Invalid Credentials"
+}
+            </code></pre>
+
+            <h5>Login attempt with existing token (200)</h5>
+            <pre><code>
+{
+    "message": "The user is already logged in",
+    "session_id": "string"
+}
+            </code></pre>
+
+            <h5>Success (200)</h5>
+            <pre><code>
+{
+    "message": "Successfully logged in",
+    "session_id": "string",
+    "user": {
+        "user_id": "string",
+        "name": "string",
+        "email": "string",
+        // Additional user details as per schema
+    },
+    "role": "string"
+}
+            </code></pre>
+        </div>
+
+        <div class="endpoint-details">
+            <h3>/logout</h3>
+            <p><span class="endpoint-method">Method:</span> POST</p>
+            <p><span class="endpoint-method">Authorization:</span> Bearer</p>
+
+            <h4>Example Request using fetch()</h4>
+
+            <pre><code class="language-javascript">
+const logoutUrl = 'http://bike-csecu:5000/api/logout';
+const sessionId = 'your_session_id_here'; // Replace with actual session ID
+
+fetch(logoutUrl, {
+    method: 'POST',
+    headers: {
+        'Authorization': `Bearer ${sessionId}`
+    }
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+})
+.then(data => {
+    console.log('Success:', data);
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+            </code></pre>
+
+            <h4>Examples:</h4>
+
+            <h5>Success (200)</h5>
+            <pre><code>
+{
+    "message": "Logged out successfully"
+}
+            </code></pre>
+
+            <h5>Error (403)</h5>
+            <pre><code>
+{
+    "name": "Session id is required.",
+    "message": "z.ZodError::message"
+}
+            </code></pre>
+        </div>
+    </main>
+
+    <script>
+        // JavaScript code here if needed
+    </script>
+</body>
+
+</html>

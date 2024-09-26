@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Management API Documentation</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">Meeting Management API</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Meeting Management API</h1>
+            <p class="text-lg mt-2">Access and manage meeting details, agendas, attendees, and more through the provided endpoints.</p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Available Endpoints</h2>
+             <!-- create-meeting api  -->
+             <article class="my-4">
+              <h3 class="text-xl font-bold mt-2">1. POST /create-meeting</h3>
+              <p class="text-lg">Create a new meeting with details, attendees, and agenda.</p>
+              <ul class="list-disc list-inside">
+                  <li>
+                      <strong>Response:</strong>
+                      <ul class="ml-4">
+                          <li><strong>Success (200):</strong> Returns a success message upon successful creation.</li>
+                          <li><strong>Invalid Data Type (400):</strong> If the provided data is not valid.</li>
+                          <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                      </ul>
+                  </li>
+              </ul>
+             </article>
+
+
+           <!-- get meeting agenda using meeting id  -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">2. GET /agenda/:meeting_id</h3>
+                <p class="text-lg">Retrieve the agenda for a specific meeting.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns meeting details.</li>
+                            <li><strong>Invalid Data Type (400):</strong> If the meeting ID is not a number.</li>
+                            <li><strong>Not Found (404):</strong> If the meeting is not found.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+             
+              <!-- attendees using meeting id  -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">3. GET /attendees/:meeting_id</h3>
+                <p class="text-lg">Retrieve the list of attendees for a specific meeting.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns the list of attendees.</li>
+                            <li><strong>Invalid Data Type (400):</strong> If the meeting ID is not a number.</li>
+                            <li><strong>Not Found (404):</strong> If the meeting is not found.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+
+           <!-- get meeting info  -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">4. GET /meetingInfo</h3>
+                <p class="text-lg">Retrieve the history of all meetings.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns the details of all meetings.</li>
+                            <li><strong>Invalid Data Type (400):</strong> If the provided data is not valid.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+
+            <!-- get meeting info using meeting id  -->
+            <article class="my-4">
+              <h3 class="text-xl font-bold mt-2">5. GET /meetingInfo/:meeting_id</h3>
+              <p class="text-lg">Retrieve all details for a specific meeting.</p>
+              <ul class="list-disc list-inside">
+                  <li>
+                      <strong>Response:</strong>
+                      <ul class="ml-4">
+                          <li><strong>Success (200):</strong> Returns all details for the meeting.</li>
+                          <li><strong>Invalid Data Type (400):</strong> If the meeting ID is not a number.</li>
+                          <li><strong>Not Found (404):</strong> If the meeting is not found.</li>
+                          <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                      </ul>
+                  </li>
+              </ul>
+          </article>
+
+
+            <!-- save meeting minutes -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">6. PUT /save-minutes</h3>
+                <p class="text-lg">Save the minutes of a meeting to the database.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns a success message upon successful update.</li>
+                            <li><strong>Invalid Data Type (400):</strong> If the provided data is not valid.</li>
+                            <li><strong>Not Found (404):</strong> If the meeting is not found.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+             <!-- get meeting minutes using meeting id  -->
+             <article class="my-4">
+              <h3 class="text-xl font-bold mt-2">7. GET /get-minutes/:meeting_id</h3>
+              <p class="text-lg">Retrieve the minutes URL for a specific meeting.</p>
+              <ul class="list-disc list-inside">
+                  <li>
+                      <strong>Response:</strong>
+                      <ul class="ml-4">
+                          <li><strong>Success (200):</strong> Returns the minutes URL.</li>
+                          <li><strong>Invalid Data Type (400):</strong> If the meeting ID is not a number.</li>
+                          <li><strong>Not Found (404):</strong> If the meeting is not found.</li>
+                          <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                      </ul>
+                  </li>
+              </ul>
+          </article>
+          <!-- save meeting signature -->
+          <article class="my-4">
+            <h3 class="text-xl font-bold mt-2">8. PUT /save-signature</h3>
+            <p class="text-lg">Save the signature of a meeting to the database.</p>
+            <ul class="list-disc list-inside">
+                <li>
+                    <strong>Response:</strong>
+                    <ul class="ml-4">
+                        <li><strong>Success (200):</strong> Returns a success message upon successful update.</li>
+                        <li><strong>Invalid Data Type (400):</strong> If the provided data is not valid.</li>
+                        <li><strong>Not Found (404):</strong> If the meeting is not found.</li>
+                        <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                    </ul>
+                </li>
+            </ul>
+        </article>
+           
+            <!-- get-signature using meeting id  -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">9. GET /get-signature/:meeting_id</h3>
+                <p class="text-lg">Retrieve the signature URL for a specific meeting.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns the signature URL.</li>
+                            <li><strong>Invalid Data Type (400):</strong> If the meeting ID is not a number.</li>
+                            <li><strong>Not Found (404):</strong> If the meeting is not found.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+
+             <!-- Added DELETE /delete-meeting/:meeting_id -->
+
+             <article class="my-4">
+              <h3 class="text-xl font-bold mt-2">10. DELETE /delete-meeting/:meeting_id</h3>
+              <p class="text-lg">Delete a specific meeting.</p>
+              <ul class="list-disc list-inside">
+                  <li>
+                      <strong>Response:</strong>
+                      <ul class="ml-4">
+                          <li><strong>Success (200):</strong> Returns a success message upon successful deletion.</li>
+                          <li><strong>Invalid Data Type (400):</strong> If the meeting ID is not a number.</li>
+                          <li><strong>Not Found (404):</strong> If the meeting is not found.</li>
+                          <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                      </ul>
+                  </li>
+              </ul>
+          </article>
+           <!-- save decision using id -->
+          <article class="my-4">
+            <h3 class="text-xl font-bold mt-2">11. PUT /save-decisions/:meeting_id</h3>
+            <p class="text-lg">Save the decisions for a specific meeting's agendas.</p>
+            <ul class="list-disc list-inside">
+                <li>
+                    <strong>Request Parameters:</strong>
+                    <ul class="ml-4">
+                        <li><strong>meeting_id:</strong> The ID of the meeting for which decisions are being saved (integer).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Request Body:</strong>
+                    <ul class="ml-4">
+                        <li><strong>decisions:</strong> An array of decisions corresponding to each agenda item (array of strings).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Response:</strong>
+                    <ul class="ml-4">
+                        <li><strong>Success (200):</strong> Returns a success message upon successful update.</li>
+                        <li><strong>Invalid Meeting ID (400):</strong> If the provided meeting ID is not a valid number.</li>
+                        <li><strong>No Agendas Found (404):</strong> If no agendas are found for the specified meeting ID.</li>
+                        <li><strong>Decision Mismatch (400):</strong> If the number of decisions does not match the number of agendas.</li>
+                        <li><strong>Invalid Data Type (400):</strong> If the provided data does not match the expected schema.</li>
+                        <li><strong>Internal Server Error (500):</strong> If there's a server-side issue or if updating any agenda item fails.</li>
+                    </ul>
+                </li>
+            </ul>
+        </article>
+        
+            
+             
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+             <!-- create meeting  -->
+             <article class="my-4">
+              <section>
+                 
+                  <article class="my-4">
+                      <h3 class="text-xl font-bold mt-2">POST /create-meeting</h3>
+                      <p class="text-lg">Endpoint to create a new meeting with detailed information.</p>
+
+                      <h4 class="text-lg mt-2">Example Request:</h4>
+              <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/create-meeting', {
+method: 'POST',
+headers: {
+  'Content-Type': 'application/json',
+},
+body: JSON.stringify({
+  meeting_id: 1,
+  meeting_type: "Project Update",
+  selected_date: "2024-07-15T10:00:00.000Z",
+  agenda: [
+    {
+      topic: "Introduction",
+      description: "Opening remarks and introductions",
+      decision: "No decision"
+    },
+    {
+      topic: "Project Update",
+      description: "Detailed project update",
+      decision: "Approve next steps"
+    }
+  ],
+  room_name: "Conference Room A",
+  selected_attendees: [1, 2, 3],
+  department_id: 5,
+  signature_url: "https://example.com/signature.png"
+})
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+          </article>
+      </section>
+
+      
+                    
+      
+              <section>
+                  <h2 class="text-2xl font-bold mt-6">Response</h2>
+      
+                  <article class="my-4">
+                      <h3 class="text-xl font-bold mt-2">Success (200):</h3>
+                      <pre class="bg-gray-200 p-2 rounded-md"><code>{
+        "message": "Meeting created successfully"
+      }</code></pre>
+                  </article>
+      
+                  <article class="my-4">
+                      <h3 class="text-xl font-bold mt-2">Invalid Data Type (400):</h3>
+                      <pre class="bg-gray-200 p-2 rounded-md"><code>{
+        "name": "Invalid data type",
+        "message": "Error details here..."
+      }</code></pre>
+                  </article>
+      
+                  <article class="my-4">
+                      <h3 class="text-xl font-bold mt-2">Internal Server Error (500):</h3>
+                      <pre class="bg-gray-200 p-2 rounded-md"><code>{
+        "message": "Internal server error",
+        "error": "Error details here..."
+      }</code></pre>
+                  </article>
+              </section>
+      
+          </article>
+
+           <!-- agenda id  -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /agenda/:meeting_id</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/agenda/1', {
+  method: 'GET',
+  
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "meeting_id": 1,
+  "agenda": "Meeting agenda details here..."
+}</code></pre>
+            </article>
+            <!-- attendees with id  -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /attendees/:meeting_id</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/attendees/1', {
+  method: 'GET',
+  
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "attendees": [
+    {
+      "user_id": 1,
+      "name": "John Doe"
+    },
+    {
+      "user_id": 2,
+      "name": "Jane Smith"
+    }
+  ]
+}</code></pre>
+            </article>
+            <!-- meeting info  -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /meetingInfo</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/meetingInfo', {
+  method: 'GET',
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "meetings": [
+    {
+      "meeting_id": 1,
+      "title": "Project Update",
+      "date": "2024-07-15",
+      "time": "10:00 AM",
+      "attendees": ["John Doe", "Jane Smith"],
+      "agenda": "Discuss project updates and next steps."
+    },
+    // More meetings...
+  ]
+}</code></pre>
+            </article>
+
+             <!-- meeting info using id  -->
+
+        <section>
+          <article class="my-4">
+              <h3 class="text-xl font-bold mt-2">GET /meetingInfo/:meeting_id</h3>
+              <p class="text-lg">Endpoint to fetch detailed information about a specific meeting.</p>
+
+              <h4 class="text-lg mt-2">Example Request:</h4>
+              <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/meetingInfo/1', {
+method: 'GET',
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+          </article>
+      </section>
+
+      <section>
+          <h2 class="text-2xl font-bold mt-6">Response</h2>
+
+          <article class="my-4">
+              <h3 class="text-xl font-bold mt-2">Success (200):</h3>
+              <pre class="bg-gray-200 p-2 rounded-md"><code>[
+{
+  "meeting_id": 1,
+  "meeting_type_id": 2,
+  "meeting_room_id": 3,
+  "department_id": 4,
+  "meeting_time": "2024-07-15T10:00:00.000Z",
+  "pdf_url": "",
+  "signature_url": "https://example.com/signature.png",
+  "meeting_type": "Project Update",
+  "room_name": "Conference Room A",
+  "department_name": "Engineering"
+  // Other meeting fields...
+}
+]</code></pre>
+          </article>
+
+          <article class="my-4">
+              <h3 class="text-xl font-bold mt-2">Invalid Data Type (400):</h3>
+              <pre class="bg-gray-200 p-2 rounded-md"><code>{
+"name": "Invalid data type.",
+"message": "Error details here..."
+}</code></pre>
+          </article>
+
+          <article class="my-4">
+              <h3 class="text-xl font-bold mt-2">Internal Server Error (500):</h3>
+              <pre class="bg-gray-200 p-2 rounded-md"><code>{
+"message": "Internal server error",
+"error": "Error details here..."
+}</code></pre>
+          </article>
+      </section>
+            <!-- save minutes -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">PUT /save-minutes</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/save-minutes', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    "meeting_id": 1,
+    "minutes": "Detailed meeting minutes go here..."
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "message": "Minutes saved successfully."
+}</code></pre>
+            </article>
+
+            <!-- get minutes using id  -->
+            <article class="my-4">
+              <h3 class="text-xl font-bold mt-2">GET /get-minutes/:meeting_id</h3>
+              <h4 class="text-lg">Request:</h4>
+              <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/get-minutes/1', {
+method: 'GET',
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+
+              <h4 class="text-lg mt-2">Response:</h4>
+              <pre class="bg-gray-200 p-2 rounded-md"><code>{
+"minutes_url": "https://example.com/minutes.pdf"
+}</code></pre>
+          </article>
+               <!-- save signature -->
+          <article class="my-4">
+            <h3 class="text-xl font-bold mt-2">PUT /save-signature</h3>
+            <p class="text-lg">Save the signature URL for a specific meeting.</p>
+            <ul class="list-disc list-inside">
+                <li>
+                    <strong>Request Body:</strong>
+                    <ul class="ml-4">
+                        <li><strong>meeting_id:</strong> The ID of the meeting for which the signature URL is being saved (integer).</li>
+                        <li><strong>signature_url:</strong> The URL of the signature (string).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Response:</strong>
+                    <ul class="ml-4">
+                        <li><strong>Success (200):</strong> Returns a success message upon successful save.
+                            <ul class="ml-4">
+                                <li><code>{"message": "Meeting minutes updated successfully", "updated": { ...updated data... }}</code></li>
+                            </ul>
+                        </li>
+                        <li><strong>Invalid Meeting ID (400):</strong> If the provided meeting ID is not a valid number.
+                            <ul class="ml-4">
+                                <li><code>{"message": "Invalid meeting ID"}</code></li>
+                            </ul>
+                        </li>
+                        <li><strong>Invalid Data (400):</strong> If the provided data does not match the expected schema.
+                            <ul class="ml-4">
+                                <li><code>{"name": "Invalid data type.", "message": "Error message details"}</code></li>
+                            </ul>
+                        </li>
+                        <li><strong>Meeting Not Found (404):</strong> If no meeting is found with the specified ID.
+                            <ul class="ml-4">
+                                <li><code>{"message": "No meeting found with the specified ID"}</code></li>
+                            </ul>
+                        </li>
+                        <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.
+                            <ul class="ml-4">
+                                <li><code>{"message": "An unknown error occurred"}</code></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </article>
+        
+
+               <!-- get signature using id  -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /get-signature/:meeting_id</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/get-signature/1', {
+  method: 'GET',
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "signature_url": "https://example.com/signature.png"
+}</code></pre>
+            </article>
+            
+            <!-- delete using id  -->
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">DELETE /delete-meeting/:meeting_id</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('/api/delete-meeting/1', {
+  method: 'DELETE',
+  
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "message": "Meeting deleted successfully."
+}</code></pre>
+            </article>
+        </section>
+                <!-- update decisions -->
+                <article>
+                  <h2>PUT /save-decisions/:meeting_id</h2>
+                  <p>Updates decisions for agendas in a meeting.</p>
+                
+                  <h3>Parameters</h3>
+                  <dl>
+                    <dt>meeting_id</dt>
+                    <dd><em>(integer)</em> - The ID of the meeting.</dd>
+                  </dl>
+                
+                  <h3>Request Body</h3>
+                  <p>Requires a JSON object with the following structure:</p>
+                  <pre>
+                    <code>
+                {
+                  "decisions": [
+                    "decision1",
+                    "decision2",
+                    ...
+                  ]
+                }
+                    </code>
+                  </pre>
+                
+                  <h3>Responses</h3>
+                  <ul>
+                    <li>
+                      <strong>200 OK</strong> - Decisions updated successfully.
+                    </li>
+                    <li>
+                      <strong>400 Bad Request</strong> - Invalid meeting ID or number of decisions does not match number of agendas.
+                    </li>
+                    <li>
+                      <strong>404 Not Found</strong> - No agendas found for the specified meeting ID.
+                    </li>
+                    <li>
+                      <strong>500 Internal Server Error</strong> - An error occurred on the server side.
+                    </li>
+                  </ul>
+                </article>
+                
+                
+      
+
+      
+
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold">Additional Information</h2>
+            <p class="text-lg mt-2">The meeting management API allows authorized users to create, view, update, and delete meetings. Ensure proper authentication and authorization for all requests. Contact support for any issues related to the meeting endpoints at <a href="mailto:sharif.csecu@gmail.com" class="text-blue-500 underline">support</a></p>
+        </section>
+    </main>
+</body>
+
+</html>

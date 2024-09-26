@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Certificate Withdrawal Endpoints for Students</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Certificate Withdrawal Endpoints for Students</h1>
+            <p class="text-lg mt-2">Endpoints to manage searching and posting data for other students, including retrieval, and submission.</p>
+            <p class="text-base mt-2">Below are the available endpoints:</p>
+
+            <ul class="list-disc list-inside mt-4">
+                <li><strong>GET /certificate-withdrawal/?user_id=${user_id}&program_abbr=${program_abbr}</strong>: Retrieve all the information of a student related to a certificate withdrawal form.</li>
+                <li><strong>GET /certificate-withdrawal/search-formData/:user_id?pageLimit=${pageLimit}&currentPage=${currentPage}</strong>: Retrieve paginated list.</li>
+                <li><strong>POST /certificate-withdrawal/post-form<strong>: Submit a new form for certificate.</li>
+            </ul>
+        </section>
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold">Request Body Schema</h2>
+            <p class="text-lg mt-2">Schema for the request body when posting a form:</p>
+            <pre class="bg-gray-100 p-4 mt-4 rounded-md"><code>
+{
+    department_name: string | null,
+    academic_session: string | null,
+    file_attachments: array(
+      object({
+        attachment_name: string | null,
+        attachment: string | null,
+      })
+    ) | null,
+    form_type: string | null,
+    money: number | null,
+    payorder_id: string | null,
+    degree: string | null,
+    district: string | null,
+    father_name_bn: string | null,
+    father_name_eng: string | null,
+    fifth_year_exam_actual_year: string | null,
+    fifth_year_exam_cgpa: number | null,
+    fifth_year_exam_name: string | null,
+    fifth_year_exam_time: string | null,
+    fir_year_exam_actual_year: string | null,
+    fir_year_exam_cgpa: number | null,
+    fir_year_exam_name: string | null,
+    fir_year_exam_time: string | null,
+    fourth_year_exam_actual_year: string | null,
+    fourth_year_exam_cgpa: number | null,
+    fourth_year_exam_name: string | null,
+    fourth_year_exam_time: string | null,
+    hall_name: string | null,
+    mobile_phone: string | null,
+    mother_name_bn: string | null,
+    mother_name_eng: string | null,
+    post_office: string | null,
+    present_address: string | null,
+    profile_image: string | null,
+    sec_year_exam_actual_year: string | null,
+    sec_year_exam_cgpa: number | null,
+    sec_year_exam_name: string | null,
+    sec_year_exam_time: string | null,
+    student_id: number | null,
+    student_name_bn: string | null,
+    student_name_eng: string | null,
+    thana: string | null,
+    third_year_exam_actual_year: string | null,
+    third_year_exam_cgpa: number | null,
+    third_year_exam_name: string | null,
+    third_year_exam_time: string | null,
+    village: string | null,
+}
+            </code></pre>
+
+            <p class="text-base mt-4">Ensure all fields adhere to the specified data types and formats.</p>
+        </section>
+    </main>
+</body>
+
+</html>

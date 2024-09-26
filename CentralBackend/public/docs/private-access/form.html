@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Form Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Endpoint: /form</h1>
+            <p class="text-lg mt-2">Manage forms for students, including creation, approval, rejection, and retrieval.</p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Available Endpoints</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">1. GET /form/</h3>
+                <p class="text-lg">Retrieve a list of all forms.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Query Parameters:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>page</code>: Page number for pagination (optional)</li>
+                            <li><code>limit</code>: Number of results per page (optional)</li>
+                            <li><code>sort</code>: Sort forms by a specific field (optional)</li>
+                            <li><code>filter</code>: Apply filters to narrow down results (optional)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns a paginated list of forms.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">2. GET /form/:id</h3>
+                <p class="text-lg">Retrieve information about a specific form.</p>
+                <ul class="list-disc list-inside">
+                    <li><strong>Path Parameters:</strong> <code>id</code> - The ID of the form.</li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns form details.</li>
+                            <li><strong>Not Found (404):</strong> If the form ID does not exist.</li>
+                            <li><strong>Forbidden (403):</strong> If the user does not have permission.</li>
+                            <li><strong>Bad Request (400):</strong> If the form ID is invalid or if there is a data type error.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">3. POST /form/</h3>
+                <p class="text-lg">Create a new form.</p>
+                <ul class="list-disc list-inside">
+                    <li><strong>Request Body:</strong></li>
+                    <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "current_address_id": 123,
+  "courses": [456, 789],
+  "permanent_address_id": 123,
+  "previous_charges": "Some charges",
+  "description_of_other_programs": "Other programs description"
+}</code></pre>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Form created successfully.</li>
+                            <li><strong>Bad Request (400):</strong> If the request body is invalid or if there is a data type error.</li>
+                            <li><strong>Forbidden (403):</strong> If the user does not have permission.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">4. PUT /form/approve/:id</h3>
+                <p class="text-lg">Approve a specific form.</p>
+                <ul class="list-disc list-inside">
+                    <li><strong>Path Parameters:</strong> <code>id</code> - The ID of the form.</li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Form approved successfully.</li>
+                            <li><strong>Not Found (404):</strong> If the form ID does not exist.</li>
+                            <li><strong>Forbidden (403):</strong> If the user does not have permission.</li>
+                            <li><strong>Bad Request (400):</strong> If the form is already rejected or if there is a data type error.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">5. PUT /form/reject/:id</h3>
+                <p class="text-lg">Reject a specific form.</p>
+                <ul class="list-disc list-inside">
+                    <li><strong>Path Parameters:</strong> <code>id</code> - The ID of the form.</li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Form rejected successfully.</li>
+                            <li><strong>Not Found (404):</strong> If the form ID does not exist.</li>
+                            <li><strong>Forbidden (403):</strong> If the user does not have permission.</li>
+                            <li><strong>Bad Request (400):</strong> If the form is already rejected or if there is a data type error.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /form/</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('http://bike-csecu.com:5000/api/form?page=1&limit=10')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "forms": [
+    {
+      "form_id": 1,
+      "student_id": 123,
+      "clearance_level": 1,
+      "current_address_id": 456,
+      "form_submission_time": "2023-06-28T10:30:00.000Z",
+      // Other form details
+    },
+    {
+      "form_id": 2,
+      "student_id": 124,
+      "clearance_level": 1,
+      "current_address_id": 457,
+      "form_submission_time": "2023-06-29T10:30:00.000Z",
+      // Other form details
+    },
+    // More forms...
+  ],
+  "pagination": {
+    "totalPages": 3,
+    "currentPage": 1,
+    "nextPage": 2,
+    "prevPage": null
+  }
+}</code></pre>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /form/:id</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('http://bike-csecu.com:5000/api/form/1')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "form_id": 1,
+  "student_id": 123,
+  "clearance_level": 1,
+  "current_address_id": 456,
+  "form_submission_time": "2023-06-28T10:30:00.000Z",
+  "evaluation": [
+    // Evaluation details...
+  ],
+  "courses": [
+    // Courses details...
+  ]
+}</code></pre>
+            </article>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Error Responses</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">General Errors</h3>
+                <p class="text-lg">These error responses apply to all endpoints.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Bad Request (400):</strong> Returned when the request data is invalid. E.g.:
+                        <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "name": "Invalid data type.",
+  "message": "Expected number, received string."
+}</code></pre>
+                    </li>
+                    <li>
+                        <strong>Forbidden (403):</strong> Returned when the user does not have permission to perform the action.
+                    </li>
+                    <li>
+                        <strong>Not Found (404):</strong> Returned when the requested resource does not exist.
+                    </li>
+                    <li>
+                        <strong>Internal Server Error (500):</strong> Returned when there is a server-side issue.
+                    </li>
+                </ul>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>

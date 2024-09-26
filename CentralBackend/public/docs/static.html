@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Static Resources</title>
+    <link rel="stylesheet" href="../styles/index.css" />
+    
+</head>
+
+<body>
+    <nav>
+        <div class="m-container">
+            <a href="/">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main>
+        <h1 class="text-2xl font-bold underline">Static Resources</h1>
+        <p class="text-lg text-pretty">
+            Access static resources (For instance: photos, documents, files, etc.) easily. Just request the resource you want and receive a response accordingly.
+        </p>
+        <ul class="list list-disc list-inside">
+            <li>
+                <b class="font-bold text-xl underline">Files:</b>
+                Access uploaded files and resources from this directory directly. You can access a file by its filename. Access URL:
+                <pre><code>/upload/{filename}</code></pre>
+                <br />
+                <b>Example:</b>
+                <span class="flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file">
+                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                    </svg>
+                    <a href="/upload/example.cpp" class="text-blue-500 hover:underline">Example File (URL: /upload/example.cpp)</a>
+                </span>
+            </li>
+
+            <li>
+                <b class="font-bold text-xl underline">Images:</b>
+                Access uploaded images exactly how you'd access files. Access URL:
+                <pre><code>/upload/image/{filename}</code></pre>
+                <b>Example:</b>
+                <a href="/upload/image/test.webp" target="_blank" class="text-blue-500 hover:underline">URL: /upload/image/test.webp</a><br/>
+                <img src="/upload/image/test.webp" alt="Example Image" />
+            </li>
+        </ul>
+    </main>
+</body>
+
+</html>

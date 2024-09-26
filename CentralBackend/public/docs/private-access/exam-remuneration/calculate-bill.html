@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Exam Activity Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Bill Calculation Endpoint</h1>
+            <h2 class="text-2xl font-bold mt-6">/calculate-bill</h2>
+            <p class="text-lg mt-2">Endpoint to calculate exam bills for the logged in teacher.</p>
+            <p class="text-base mt-2">Below are the available endpoints:</p>
+
+            <ul class="list-disc list-inside mt-4">
+                <li><strong>GET /</strong>: Retrieve a list of exams and academic sessions the teacher has participated to incur exam bills.</li>
+                <li><strong>GET /:exam_id/:academic_session_id</strong>: Retrieve the teacher's exam bill calculation for the specific exam.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /calculate-bill</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>fetch('http://bike-csecu.com:5000/api/cuers/calculate-bill',{
+method: 'GET',
+headers: {
+    'Authorization': `Bearer ${sessionId}`
+    'Content-Type': 'application/json',
+    }                
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code>
+                </pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>{
+    "data": [
+      {
+        "exam_id": 4,
+        "academic_session_id": 20180801
+      }
+    ]
+  }</code></pre>
+            </article>
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /calculate-bill/:exam_id/:academic_session_id</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>fetch('http://bike-csecu.com:5000/api/cuers/calculate-bill/4/20180801',{
+method: 'GET',
+headers: {
+    'Authorization': `Bearer ${sessionId}`
+    'Content-Type': 'application/json',
+    }                
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code>
+                </pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md">
+<code>To be added</code></pre>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>

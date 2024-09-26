@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | Upload Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Endpoint: /upload</h1>
+            <p class="text-lg mt-2">Upload files and images to the server. Supports multiple files or single image uploads.</p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Available Endpoints</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">1. POST /upload/</h3>
+                <p class="text-lg">Upload multiple files to the server.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Form Data:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>items</code>: Array of files (up to 8 files, max size 8MB each)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (201):</strong> Returns a message confirming successful upload along with file details.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">2. POST /upload/image</h3>
+                <p class="text-lg">Upload a single image file to the server.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Form Data:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>image</code>: Single image file (max size 8MB)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (201):</strong> Returns a message confirming successful image upload along with image details.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">POST /upload/</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>const formData = new FormData();
+formData.append('items', file1);
+formData.append('items', file2);
+// Append up to 8 files
+
+fetch('/api/upload', {
+  method: 'POST',
+  body: formData
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "message": "Successfully uploaded files",
+  "files": [
+    {
+      "fieldname": "items",
+      "originalname": "file1.txt",
+      "encoding": "7bit",
+      "mimetype": "text/plain",
+      "destination": "public/upload",
+      "filename": "items-1688529043154-562345678.txt",
+      "path": "public/upload/items-1688529043154-562345678.txt",
+      "size": 1024
+    },
+    // Other files...
+  ]
+}</code></pre>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">POST /upload/image</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>const formData = new FormData();
+formData.append('image', imageFile);
+
+fetch('/api/upload/image', {
+  method: 'POST',
+  body: formData
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "message": "Image uploaded successfully",
+  "image": {
+    "fieldname": "image",
+    "originalname": "image.jpg",
+    "encoding": "7bit",
+    "mimetype": "image/jpeg",
+    "destination": "public/upload/image",
+    "filename": "image-1688529043154-562345678.jpg",
+    "path": "public/upload/image/image-1688529043154-562345678.jpg",
+    "size": 2048
+  }
+}</code></pre>
+            </article>
+        </section>
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold">Additional Information</h2>
+            <p class="text-lg mt-2">The <code>/upload</code> endpoint allows file and image uploads. Multiple files can be uploaded via <code>/upload</code>, while single images are uploaded via <code>/upload/image</code>. Each file has a maximum size limit of 8MB, and the total number of files allowed in a single request to <code>/upload</code> is 8. Contact support for any issues related to file uploads.</p>
+        </section>
+    </main>
+</body>
+
+</html>

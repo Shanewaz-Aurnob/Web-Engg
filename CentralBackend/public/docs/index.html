@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web Server | User Manual</title>
+    <link rel="stylesheet" href="/styles/index.css" />
+</head>
+
+<body>
+    <nav>
+        <div class="m-container">
+            <a href="/">CSECU Web Server</a>
+            <span class="flex-grow"></span>
+            <a href="#">Visit Portal</a>
+        </div>
+    </nav>
+    <main>
+        <h1>CSECU Web Server User Manual</h1>
+        <p>Welcome to the CSECU web server user manual. This guide will help you access the server, interact with its
+            resources, and use its APIs effectively.</p>
+
+        <h2>Base URL</h2>
+        <p>All requests to the server should start with the following base URL:</p>
+        <pre><code>http://bike-csecu.com:5000/</code></pre>
+
+        <h2>API Endpoint</h2>
+        <p>The main endpoint for API access is:</p>
+        <pre><code>http://bike-csecu.com:5000/api/{endpoint}</code></pre>
+
+        <h2>Static Resources</h2>
+        <p>The server hosts static resources at the following paths:</p>
+        <ul>
+            <li>Files: <a href="http://bike-csecu.com:5000/upload">/upload</a></li>
+            <li>Images: <a href="http://bike-csecu.com:5000/upload/image">/upload/image</a></li>
+        </ul>
+
+        <h3>Example Resources</h3>
+        <ul>
+            <li>File: <a href="http://bike-csecu.com:5000/upload/example.cpp">example.cpp</a></li>
+            <li>Image: <a href="http://bike-csecu.com:5000/upload/image/test.webp">test.webp</a></li>
+        </ul>
+
+        <h2>Accessing Resources</h2>
+        <h3>Fetching Files and Images</h3>
+        <p><strong>Example 1:</strong> Accessing a File</p>
+        <p>To access a file like <code>example.cpp</code>, navigate to:</p>
+        <pre><code>http://bike-csecu.com:5000/upload/example.cpp</code></pre>
+
+        <p><strong>Example 2:</strong> Accessing an Image</p>
+        <p>To view an image like <code>test.webp</code>, navigate to:</p>
+        <pre><code>http://bike-csecu.com:5000/upload/image/test.webp</code></pre>
+
+        <h2>Accessing the <code>/teacher</code> API Endpoint</h2>
+        <p>To fetch data from the <code>/teacher</code> endpoint, you can use tools like <strong>Postman</strong>,
+            <strong>Thunder Client</strong>, or the <strong>Fetch API</strong>.</p>
+
+        <h3>Example Response</h3>
+        <pre><code>{
+  "total_records": 11,
+  "total_data": 10,
+  "data": [
+    // Example data...
+  ],
+  "page_count": 2,
+  "first_page": 1,
+  "next": { "page": 2, "limit": 10 },
+  "previous": null
+}</code></pre>
+
+        <h2>Using API Endpoints</h2>
+        <h3>Using Postman or Thunder Client</h3>
+        <ol>
+            <li><strong>Create a GET Request</strong>
+                <ul>
+                    <li><strong>URL:</strong> <code>http://bike-csecu.com:5000/api/teacher</code></li>
+                    <li><strong>Method:</strong> GET</li>
+                </ul>
+            </li>
+            <li><strong>Send the Request</strong>
+                <ul>
+                    <li>Click <strong>Send</strong> and observe the response.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>Using Fetch API</h3>
+        <p>To fetch data or download resources using the Fetch API, you can use the following examples:</p>
+
+        <h4>Example: Fetching API Data</h4>
+        <pre><code>
+// Fetch data from the /teacher endpoint
+fetch('http://bike-csecu.com:5000/api/teacher')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error fetching data:', error));</code></pre>
+
+        <h4>Example: Downloading a File</h4>
+        <pre><code>
+// Fetch and download a file
+fetch('http://bike-csecu.com:5000/upload/example.cpp')
+  .then(response => response.text())
+  .then(data => {
+    const blob = new Blob([data], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'example.cpp';
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+  })
+  .catch(error => console.error('Error fetching file:', error));</code></pre>
+
+        <h4>Example: Downloading an Image</h4>
+        <pre><code>
+// Fetch and download an image
+fetch('http://bike-csecu.com:5000/upload/image/test.webp')
+  .then(response => response.blob())
+  .then(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'test.webp';
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+  })
+  .catch(error => console.error('Error fetching image:', error));</code></pre>
+
+    </main>
+</body>
+
+</html>

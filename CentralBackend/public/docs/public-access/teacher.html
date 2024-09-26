@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web server | Teacher Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Endpoint: /teacher</h1>
+            <p class="text-lg mt-2">Access teacher information including details about specific teachers within the system.</p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Available Endpoints</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">1. GET /teacher/:id</h3>
+                <p class="text-lg">Retrieve details of a specific teacher by their ID.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Parameters:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>id</code>: Teacher ID (integer)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns teacher details.</li>
+                            <li><strong>Not Found (404):</strong> If teacher with the given ID does not exist.</li>
+                            <li><strong>Invalid Data Type (400):</strong> If the provided ID is not a number.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">2. GET /teacher/</h3>
+                <p class="text-lg">Retrieve a list of all teachers.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Query Parameters:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>page</code>: Page number for pagination (optional)</li>
+                            <li><code>limit</code>: Number of results per page (optional)</li>
+                            <li><code>sort</code>: Sort teachers by a specific field (optional)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns a paginated list of teachers.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">3. GET /teacher/search?q=:query</h3>
+                <p class="text-lg">Search for teachers based on a search query.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Query Parameters:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>q</code>: Search query (string)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns teachers matching the search query.</li>
+                            <li><strong>Bad Request (400):</strong> If the search query parameter is missing or invalid.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /teacher/1</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('http://bike-csecu.com:5000/api/teacher/1')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "teacher_id": 1,
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "department_id": 1,
+  // Other teacher fields
+}</code></pre>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /teacher/</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('http://bike-csecu.com:5000/api/teacher/')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "teachers": [
+    {
+      "teacher_id": 1,
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "department_id": 1,
+      // Other teacher fields
+    },
+    {
+      "teacher_id": 2,
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com",
+      "department_id": 2,
+      // Other teacher fields
+    },
+    // More teachers...
+  ],
+  "pagination": {
+    "totalPages": 3,
+    "currentPage": 1,
+    "nextPage": 2,
+    "prevPage": null
+  }
+}</code></pre>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /teacher/search?q=john</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('http://bike-csecu.com:5000/api/teacher/search?q=john')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "teachers": [
+    {
+      "teacher_id": 1,
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "department_id": 1,
+      // Other teacher fields
+    },
+    {
+      "teacher_id": 3,
+      "name": "Jonathan Adams",
+      "email": "jonathan.adams@example.com",
+      "department_id": 1,
+      // Other teacher fields
+    }
+  ],
+  "pagination": {
+    "totalPages": 1,
+    "currentPage": 1,
+    "nextPage": null,
+    "prevPage": null
+  }
+}</code></pre>
+            </article>
+        </section>
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold">Additional Information</h2>
+            <p class="text-lg mt-2">The <code>/teacher</code> endpoint provides access to teacher information such as name, email, and associated department. For pagination, use the <code>page</code> and <code>limit</code> query parameters to navigate through the results. For searching, use the <code>q</code> query parameter to find teachers by name or email. Contact support for any issues related to teacher endpoints.</p>
+        </section>
+    </main>
+</body>
+
+</html>

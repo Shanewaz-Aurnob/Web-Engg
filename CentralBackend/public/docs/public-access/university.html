@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSECU Web server | University Endpoint</title>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <nav class="bg-blue-500 w-full h-min text-white">
+        <div class="m-container mx-auto flex flex-row gap-2 md:gap-4 items-center p-4">
+            <a href="/" class="font-bold text-lg md:text-2xl hover:underline">CSECU Web server</a>
+            <span class="flex-grow"></span>
+            <a href="#" class="font-bold text-md md:text-xl hover:underline">Visit Portal</a>
+        </div>
+    </nav>
+
+    <main class="p-4 mx-auto max-w-3xl">
+        <section>
+            <h1 class="text-3xl font-bold mt-4">Endpoint: /university</h1>
+            <p class="text-lg mt-2">Access university information including details about specific universities within the system.</p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Available Endpoints</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">1. GET /university/:id</h3>
+                <p class="text-lg">Retrieve details of a specific university by its ID.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Parameters:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>id</code>: University ID (integer)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns university details.</li>
+                            <li><strong>Not Found (404):</strong> If university with the given ID does not exist.</li>
+                            <li><strong>Invalid Data Type (400):</strong> If the provided ID is not a number.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">2. GET /university/</h3>
+                <p class="text-lg">Retrieve a list of all universities.</p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        <strong>Query Parameters:</strong>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><code>page</code>: Page number for pagination (optional)</li>
+                            <li><code>limit</code>: Number of results per page (optional)</li>
+                            <li><code>sort</code>: Sort universities by a specific field (optional)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Response:</strong>
+                        <ul class="ml-4">
+                            <li><strong>Success (200):</strong> Returns a paginated list of universities.</li>
+                            <li><strong>Internal Server Error (500):</strong> If there's a server-side issue.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mt-6">Example Requests</h2>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /university/1</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('http://bike-csecu.com:5000/api/university/1')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "university_id": 1,
+  "name": "CSECU University",
+  "location": "City A",
+  // Other university fields
+}</code></pre>
+            </article>
+
+            <article class="my-4">
+                <h3 class="text-xl font-bold mt-2">GET /university/</h3>
+                <h4 class="text-lg">Request:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>fetch('http://bike-csecu.com:5000/api/university/')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+                <h4 class="text-lg mt-2">Response:</h4>
+                <pre class="bg-gray-200 p-2 rounded-md"><code>{
+  "universities": [
+    {
+      "university_id": 1,
+      "name": "CSECU University",
+      "location": "City A",
+      // Other university fields
+    },
+    {
+      "university_id": 2,
+      "name": "Another University",
+      "location": "City B",
+      // Other university fields
+    },
+    // More universities...
+  ],
+  "pagination": {
+    "totalPages": 2,
+    "currentPage": 1,
+    "nextPage": 2,
+    "prevPage": null
+  }
+}</code></pre>
+            </article>
+        </section>
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-bold">Additional Information</h2>
+            <p class="text-lg mt-2">The <code>/university</code> endpoint provides access to university information such as name and location. For pagination, use the <code>page</code> and <code>limit</code> query parameters to navigate through the results. Contact support for any issues related to university endpoints.</p>
+        </section>
+    </main>
+</body>
+
+</html>
