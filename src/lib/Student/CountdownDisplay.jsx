@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode.react"; // Import QRCode component
+import { Button } from "@/components/ui/button";
 
 const CountdownDisplay = () => {
   const [countdown, setCountdown] = useState(0);
@@ -76,6 +77,8 @@ const CountdownDisplay = () => {
               <p className="text-xl font-semibold">Date : {sessionDetails.date}</p>
               <p className="text-xl font-semibold">Starting Time: {sessionDetails.time}</p>
               <p className="text-xl font-semibold">Time left: {formatTime(countdown)}</p>
+              <p className="text-xl font-semibold">End Time: {new Date(Date.now() + countdown * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p>
+                <Button className="mt-4">Submit Attendance</Button>
             </div>
             <div className="flex justify-center items-center">
             <QRCode className="w-64" size={240} fgColor={'#66798F'} value={qrCodeData} /> {/* Render the QR code */}
