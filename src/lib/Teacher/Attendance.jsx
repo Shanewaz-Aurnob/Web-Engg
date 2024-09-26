@@ -260,7 +260,8 @@ const Attendance = () => {
                 <TableHead className="p-3 text-center text-lg text-black">S.No</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Course Name</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Course Code</TableHead>
-                <TableHead className="p-3 text-center text-lg text-black">Program</TableHead>
+                 <TableHead className="p-3 text-center text-lg text-black">Program</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Type</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Which Semester</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Details</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Action</TableHead>
@@ -273,6 +274,7 @@ const Attendance = () => {
                   <TableCell className="text-center">{course.course_name}</TableCell>
                   <TableCell className="text-center">{course.code}</TableCell>
                   <TableCell className="text-center">{course.program}</TableCell>
+                  <TableCell className="text-center">Theory</TableCell>
                   <TableCell className="text-center">{course.sem}</TableCell>
                   <TableCell className="text-center">
                     <Link to={`/courseDetails/${course.id}`}>
