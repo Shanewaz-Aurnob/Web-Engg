@@ -91,9 +91,7 @@ const { toPDF, targetRef } = usePDF({filename: 'attendance.pdf'});
             </Table>
 
 
-            <div ref={targetRef} 
-            style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}
-            >
+            <div ref={targetRef} style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}>
                 <AttendanceSheet courseCode={courseCode} teacherName={teacherName} />
             </div>
         </div>
