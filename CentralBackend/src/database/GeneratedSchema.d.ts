@@ -2,10 +2,9 @@ import type { ColumnType } from "kysely";
 
 export type Decimal = ColumnType<string, number | string, number | string>;
 
-export type Generated<T> =
-  T extends ColumnType<infer S, infer I, infer U>
-    ? ColumnType<S, I | undefined, U>
-    : ColumnType<T, T | undefined, T>;
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
 
 export interface AcademicSession {
   academic_session_id: number;
@@ -180,6 +179,15 @@ export interface CourseTeacher {
   teacher_id: number;
 }
 
+export interface CreateClass {
+  class_startDate: Date;
+  class_startTime: string | null;
+  course_id: number | null;
+  duration: number;
+  secret_code: string | null;
+  session: string | null;
+}
+
 export interface Department {
   department_abbr: string;
   department_id: Generated<number>;
@@ -206,8 +214,7 @@ export interface EManagerAttachment {
   attachment_size: number | null;
   attachment_type: string;
   attachment_url: string;
-  reviewer_id: number;
-  submission_id: string;
+  review_id: string;
 }
 
 export interface EManagerFile {
@@ -237,26 +244,14 @@ export interface EManagerSubmission {
   initial_submission_id: string | null;
   keywords: string;
   paper_title: string;
-  status:
-    | "Accepted"
-    | "Assigned"
-    | "Pending"
-    | "Rejected"
-    | "Reviewed"
-    | "Submitted";
+  status: "Accepted" | "Assigned" | "Pending" | "Rejected" | "Reviewed" | "Submitted";
   status_date: Date;
   submission_date: Date;
   submission_id: string;
 }
 
 export interface EManagerSubmissionStatusHistory {
-  status:
-    | "Accepted"
-    | "Assigned"
-    | "Pending"
-    | "Rejected"
-    | "Reviewed"
-    | "Submitted";
+  status: "Accepted" | "Assigned" | "Pending" | "Rejected" | "Reviewed" | "Submitted";
   status_date: Date;
   submission_id: string;
 }
@@ -548,6 +543,42 @@ export interface SemesterResult {
   student_id: number;
 }
 
+export interface SoSMessage {
+  attachment: string | null;
+  content: string | null;
+  message_id: Generated<number>;
+  mobile: string;
+  timestamp: Generated<Date | null>;
+}
+
+export interface SoSNotice {
+  content: string | null;
+  id: Generated<number>;
+  timestamp: Generated<Date | null>;
+  title: string;
+}
+
+export interface SoSRoom {
+  description: string | null;
+  max_participants: Generated<number | null>;
+  room_code: string;
+  timestamp: Generated<Date | null>;
+  title: string | null;
+}
+
+export interface SoSRoomParticipant {
+  membership_status: Generated<"admin" | "member" | "pending" | null>;
+  mobile: string;
+  room_code: string;
+  timestamp: Generated<Date | null>;
+}
+
+export interface SoSUser {
+  mobile: string;
+  password: string;
+  user_name: string | null;
+}
+
 export interface Student {
   academic_session_id: number | null;
   department_id: number;
@@ -626,8 +657,10 @@ export interface Teacher {
   area_of_interest: string | null;
   department_id: number;
   designation: string;
+  designation_bn: string | null;
   teacher_id: number;
   title: string;
+  title_bn: string | null;
   user_id: string;
 }
 
@@ -692,6 +725,7 @@ export interface DB {
   Course: Course;
   Course_Teacher: CourseTeacher;
   Courses_in_Semester: CoursesInSemester;
+  Create_Class: CreateClass;
   Department: Department;
   Education: Education;
   EManager_Attachment: EManagerAttachment;
@@ -733,6 +767,11 @@ export interface DB {
   Roles: Roles;
   Scholarship_and_fellowship: ScholarshipAndFellowship;
   Semester_Result: SemesterResult;
+  SoS_Message: SoSMessage;
+  SoS_Notice: SoSNotice;
+  SoS_Room: SoSRoom;
+  SoS_Room_Participant: SoSRoomParticipant;
+  SoS_User: SoSUser;
   Student: Student;
   Student_Announcement: StudentAnnouncement;
   Student_Announcement_File: StudentAnnouncementFile;
