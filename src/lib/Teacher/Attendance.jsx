@@ -13,12 +13,7 @@ const Attendance = () => {
   const [courses, setCourses] = useState([]);
   const [sessionActive, setSessionActive] = useState(false);
   const [warning, setWarning] = useState("");
-  const [sessionDetails, setSessionDetails] = useState({
-    courseName: "",
-    courseCode: "",
-    date: "",
-    time: "",
-  });
+  const [sessionDetails, setSessionDetails] = useState({});
   const [qrCodeData, setQrCodeData] = useState("");
   const teacherName = 'Dr. Rudra Pratap Deb Nath';
   const courseCode = 'CSE-413';
@@ -35,36 +30,9 @@ const Attendance = () => {
       });
   }, []);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (sessionActive) {
-      setWarning("You can't create session more than once at a time");
-      return;
-    }
-    setWarning('');
-    const formData = new FormData(e.target);
-    const minutes = parseInt(formData.get('minutes'), 10);
 
-    const newSessionDetails = {
-      courseName: formData.get('course_name'),
-      courseCode: formData.get('course_code'),
-      date: formData.get('date'),
-      time: formData.get('time'),
-    };
-
-    setSessionDetails(newSessionDetails);
-    localStorage.setItem('sessionDetails', JSON.stringify(newSessionDetails));
-
-    const randomNumber = Math.floor(Math.random() * 1000000); // generates a random number between 0 and 999999
-    const qrData = `${newSessionDetails.courseName}|${newSessionDetails.courseCode}|${newSessionDetails.date}|${newSessionDetails.time}|${randomNumber}`;
-    setQrCodeData(qrData); // Store QR code data in localStorage
-
-    startCountdown(minutes);
-    console.log("Session created with data:", formData);
-    e.target.reset();
-  };
-
-  const CreateSessionForm = ({ course, onSubmit }) => {
+ 
+  const CreateSessionForm = ({ course }) => {
     const localDate = new Date();
     const localDateString = localDate.toLocaleDateString("en-CA");
     const localTimeString = localDate.toLocaleTimeString("en-GB", {
@@ -72,87 +40,134 @@ const Attendance = () => {
       minute: "2-digit",
     });
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (sessionActive) {
+          setWarning("You can't create session more than once at a time");
+          return;
+        }
+        setWarning('');
+
+        const formData = new FormData(e.target);
+        const data = {
+            course_id: course.course_id,
+            course_code: formData.get('course_code'),
+            semester: Number(formData.get('semester')),
+            class_startDate: formData.get('date'),
+            class_startTime: `${formData.get('time')}:00`, // Append ":00" to the time
+            duration: Number(formData.get('minutes')),
+            session: formData.get('session'), // Ensure session is included in the payload
+            secret_code: "-",
+        };
+
+        console.log('Data to be sent:', data);
+
+        try {
+            const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            console.log('Response status:', response.status);
+            const responseData = await response.json();
+            console.log('Response data:', responseData);
+
+            if (response.ok) {
+                console.log('Session created successfully');
+            } else {
+                console.error('Error creating session:', responseData);
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+        }
+    };
+
     return (
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="courseDetails">Course Name & Course Code</label>
-          <div className="mt-1 flex">
-            <Input
-              type="text"
-              id="courseName"
-              defaultValue={course.course_title}
-              readOnly
-              name="course_name"
-              className="mr-2"
-            />
-            <Input
-              type="text"
-              id="courseCode"
-              defaultValue={course.course_code}
-              readOnly
-              name="course_code"
-            />
-          </div>
-        </div>
-        <div>
-          <label htmlFor="courseDetails">Session & Semester</label>
-          <div className="mt-1 flex">
-            <Input
-              type="text"
-              id="courseName"
-              defaultValue={course.course_title}
-              readOnly
-              name="course_name"
-              className="mr-2"
-            />
-            <Input
-              type="text"
-              id="courseCode"
-              defaultValue={course.semester}
-              readOnly
-              name="course_code"
-            />
-          </div>
-        </div>
-        <div>
-          <label htmlFor="date">Session Date</label>
-          <div className="mt-1">
-            <Input
-              type="date"
-              id="date"
-              defaultValue={localDateString}
-              name="date"
-            />
-          </div>
-        </div>
-        <div>
-          <label htmlFor="time">Session Time</label>
-          <div className="mt-1">
-            <Input
-              type="time"
-              id="time"
-              defaultValue={localTimeString}
-              name="time"
-            />
-          </div>
-        </div>
-        <div>
-          <label htmlFor="minutes">Duration (in minutes)</label>
-          <div className="mt-1">
-            <Input
-              type="number"
-              id="minutes"
-              name="minutes"
-              onChange={(e) => console.log(e.target.value)}
-            />
-          </div>
-        </div>
-        <button type="submit" className="bg-[#0C4A6E] text-white py-2 px-4 rounded-md font-semibold">
-          Create Session
-        </button>
-      </form>
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <label htmlFor="courseDetails">Course Name & Course Code</label>
+                <div className="mt-1 flex">
+                    <Input
+                        type="text"
+                        id="courseName"
+                        defaultValue={course.course_title}
+                        readOnly
+                        name="course_name"
+                        className="mr-2"
+                    />
+                    <Input
+                        type="text"
+                        id="courseCode"
+                        defaultValue={course.course_code}
+                        readOnly
+                        name="course_code"
+                    />
+                </div>
+            </div>
+            <div>
+                <label htmlFor="semester">Session & Semester</label>
+                <div className="mt-1 flex">
+                    <Input
+                        type="text"
+                        id="session"
+                        defaultValue={course.session}
+                        readOnly
+                        name="session"
+                        className="mr-2"
+                    />
+                    <Input
+                        type="text"
+                        id="semester"
+                        defaultValue={course.semester}
+                        readOnly
+                        name="semester"
+                    />
+                </div>
+            </div>
+            <div>
+                <label htmlFor="date">Session Date</label>
+                <div className="mt-1">
+                    <Input
+                        type="date"
+                        id="date"
+                        defaultValue={localDateString}
+                        name="date"
+                    />
+                </div>
+            </div>
+            <div>
+                <label htmlFor="time">Session Time</label>
+                <div className="mt-1">
+                    <Input
+                        type="time"
+                        id="time"
+                        defaultValue={localTimeString}
+                        name="time"
+                    />
+                </div>
+            </div>
+            <div>
+                <label htmlFor="minutes">Duration (in minutes)</label>
+                <div className="mt-1">
+                    <Input
+                        type="number"
+                        id="minutes"
+                        name="minutes"
+                    />
+                </div>
+            </div>
+            <button type="submit" className="bg-[#0C4A6E] text-white py-2 px-4 rounded-md font-semibold">
+                Create Session
+            </button>
+        </form>
     );
-  };
+};
+
+
 
   const [countdown, setCountdown] = useState(0);
 
@@ -286,7 +301,8 @@ const Attendance = () => {
                 <TableHead className="p-3 text-center text-lg text-black">Course Code</TableHead>
                  <TableHead className="p-3 text-center text-lg text-black">Program</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Type</TableHead>
-                <TableHead className="p-3 text-center text-lg text-black">Which Semester</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Semester</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Details</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Action</TableHead>
               </TableRow>
@@ -300,6 +316,7 @@ const Attendance = () => {
                   <TableCell className="text-center">{course.program_abbr}</TableCell>
                   <TableCell className="text-center">{course.course_type}</TableCell>
                   <TableCell className="text-center">{course.semester}</TableCell>
+                  <TableCell className="text-center">{course.session}</TableCell>
                   <TableCell className="text-center">
                     <Link to={`/courseDetails/${course.id}`}>
                       <Button>View details</Button>
@@ -320,7 +337,7 @@ const Attendance = () => {
                           style={{ position: 'absolute', top: '-50%', left: '50%', transform: 'translate(-200%, -80%)' }}
                           className="w-96 shadow-slate-950 shadow-2xl"
                         >
-                          <CreateSessionForm course={course} onSubmit={onSubmit} />
+                          <CreateSessionForm course={course}  />
                         </PopoverContent>
                       )}
                     </Popover>
