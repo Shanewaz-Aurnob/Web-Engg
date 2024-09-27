@@ -171,70 +171,70 @@ const Attendance = () => {
 
   const [countdown, setCountdown] = useState(0);
 
-  const startCountdown = (totalMinutes) => {
-    setSessionActive(true);
-    const totalSeconds = totalMinutes * 60;
-    const endTime = Date.now() + totalSeconds * 1000;
-    localStorage.setItem('countdownEndTime', endTime);
-    setCountdown(totalSeconds);
+  // const startCountdown = (totalMinutes) => {
+  //   setSessionActive(true);
+  //   const totalSeconds = totalMinutes * 60;
+  //   const endTime = Date.now() + totalSeconds * 1000;
+  //   localStorage.setItem('countdownEndTime', endTime);
+  //   setCountdown(totalSeconds);
 
-    const interval = setInterval(() => {
-      setCountdown((prevCountdown) => {
-        if (prevCountdown > 0) {
-          return prevCountdown - 1;
-        } else {
-          clearInterval(interval);
-          localStorage.removeItem('countdownEndTime');
-          setSessionActive(false);
-          return 0;
-        }
-      });
-    }, 1000);
+  //   const interval = setInterval(() => {
+  //     setCountdown((prevCountdown) => {
+  //       if (prevCountdown > 0) {
+  //         return prevCountdown - 1;
+  //       } else {
+  //         clearInterval(interval);
+  //         localStorage.removeItem('countdownEndTime');
+  //         setSessionActive(false);
+  //         return 0;
+  //       }
+  //     });
+  //   }, 1000);
 
-    return interval;
-  };
+  //   return interval;
+  // };
 
-  useEffect(() => {
-    const endTime = localStorage.getItem('countdownEndTime');
-    const savedSessionDetails = localStorage.getItem('sessionDetails');
+  // useEffect(() => {
+  //   const endTime = localStorage.getItem('countdownEndTime');
+  //   const savedSessionDetails = localStorage.getItem('sessionDetails');
 
-    if (savedSessionDetails) {
-      setSessionDetails(JSON.parse(savedSessionDetails));
-    }
+  //   if (savedSessionDetails) {
+  //     setSessionDetails(JSON.parse(savedSessionDetails));
+  //   }
 
-    if (endTime) {
-      const remainingTime = Math.floor((endTime - Date.now()) / 1000);
-      if (remainingTime > 0) {
-        setCountdown(remainingTime);
-        setSessionActive(true);
-        const interval = setInterval(() => {
-          setCountdown((prevCountdown) => {
-            if (prevCountdown > 0) {
-              return prevCountdown - 1;
-            } else {
-              clearInterval(interval);
-              localStorage.removeItem('countdownEndTime');
-              localStorage.removeItem('sessionDetails');
-              setSessionActive(false);
-              return 0;
-            }
-          });
-        }, 1000);
-        return () => clearInterval(interval);
-      } else {
-        localStorage.removeItem('countdownEndTime');
-        localStorage.removeItem('sessionDetails');
-      }
-    }
-  }, []);
+  //   if (endTime) {
+  //     const remainingTime = Math.floor((endTime - Date.now()) / 1000);
+  //     if (remainingTime > 0) {
+  //       setCountdown(remainingTime);
+  //       setSessionActive(true);
+  //       const interval = setInterval(() => {
+  //         setCountdown((prevCountdown) => {
+  //           if (prevCountdown > 0) {
+  //             return prevCountdown - 1;
+  //           } else {
+  //             clearInterval(interval);
+  //             localStorage.removeItem('countdownEndTime');
+  //             localStorage.removeItem('sessionDetails');
+  //             setSessionActive(false);
+  //             return 0;
+  //           }
+  //         });
+  //       }, 1000);
+  //       return () => clearInterval(interval);
+  //     } else {
+  //       localStorage.removeItem('countdownEndTime');
+  //       localStorage.removeItem('sessionDetails');
+  //     }
+  //   }
+  // }, []);
 
-  const formatTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
+  // const formatTime = (seconds) => {
+  //   const hours = Math.floor(seconds / 3600);
+  //   const minutes = Math.floor((seconds % 3600) / 60);
+  //   const remainingSeconds = seconds % 60;
 
-    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  };
+  //   return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  // };
 
   return (
     <div>
