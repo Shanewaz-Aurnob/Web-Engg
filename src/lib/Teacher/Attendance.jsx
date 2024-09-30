@@ -40,52 +40,117 @@ const Attendance = () => {
       minute: "2-digit",
     });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
 
-        if (sessionActive) {
+    //     if (sessionActive) {
+    //       setWarning("You can't create session more than once at a time");
+    //       return;
+    //     }
+    //     setWarning('');
+
+    //     const formData = new FormData(e.target);
+    //     const data = {
+    //         course_id: course.course_id,
+    //         course_code: formData.get('course_code'),
+    //         semester: Number(formData.get('semester')),
+    //         class_startDate: formData.get('date'),
+    //         class_startTime: `${formData.get('time')}:00`, // Append ":00" to the time
+    //         duration: Number(formData.get('minutes')),
+    //         session: formData.get('session'), // Ensure session is included in the payload
+    //         // class_endTime: ,
+    //         secret_code: "-",
+    //     };
+
+    //     console.log('Data to be sent:', data);
+
+    //     try {
+    //         const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(data),
+    //         });
+
+    //         console.log('Response status:', response.status);
+    //         const responseData = await response.json();
+    //         console.log('Response data:', responseData);
+
+    //         if (response.ok) {
+    //             console.log('Session created successfully');
+    //         } else {
+    //             console.error('Error creating session:', responseData);
+    //         }
+    //     } catch (error) {
+    //         console.error('Network error:', error);
+    //     }
+    // };
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      if (sessionActive) {
           setWarning("You can't create session more than once at a time");
           return;
-        }
-        setWarning('');
-
-        const formData = new FormData(e.target);
-        const data = {
-            course_id: course.course_id,
-            course_code: formData.get('course_code'),
-            semester: Number(formData.get('semester')),
-            class_startDate: formData.get('date'),
-            class_startTime: `${formData.get('time')}:00`, // Append ":00" to the time
-            duration: Number(formData.get('minutes')),
-            session: formData.get('session'), // Ensure session is included in the payload
-            secret_code: "-",
-        };
-
-        console.log('Data to be sent:', data);
-
-        try {
-            const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-
-            console.log('Response status:', response.status);
-            const responseData = await response.json();
-            console.log('Response data:', responseData);
-
-            if (response.ok) {
-                console.log('Session created successfully');
-            } else {
-                console.error('Error creating session:', responseData);
-            }
-        } catch (error) {
-            console.error('Network error:', error);
-        }
-    };
-
+      }
+      setWarning('');
+  
+      const formData = new FormData(e.target);
+      const startTime = formData.get('time');
+      const duration = Number(formData.get('minutes'));
+  
+      // Split the start time into hours and minutes
+      const [startHour, startMinute] = startTime.split(':').map(Number);
+  
+      // Calculate the total minutes
+      let totalMinutes = startHour * 60 + startMinute + duration;
+  
+      // Calculate the end hours and minutes
+      const endHour = Math.floor(totalMinutes / 60);
+      const endMinute = totalMinutes % 60;
+  
+      // Format end time to "HH:MM:SS"
+      const class_endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}:00`;
+  
+      const data = {
+          course_id: course.course_id,
+          course_code: formData.get('course_code'),
+          semester: Number(formData.get('semester')),
+          class_startDate: formData.get('date'),
+          class_startTime: `${startTime}:00`, // Append ":00" to the start time
+          duration: duration,
+          session: formData.get('session'), // Ensure session is included in the payload
+          class_endTime: class_endTime,
+          secret_code: "-",
+          teacher_id: course.teacher_id,
+      };
+  
+      console.log('Data to be sent:', data);
+  
+      try {
+          const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+          });
+  
+          console.log('Response status:', response.status);
+          const responseData = await response.json();
+          console.log('Response data:', responseData);
+  
+          if (response.ok) {
+              console.log('Session created successfully');
+          } else {
+              console.error('Error creating session:', responseData);
+          }
+      } catch (error) {
+          console.error('Network error:', error);
+      }
+  };
+  
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -272,7 +337,7 @@ const Attendance = () => {
               <p className="text-xl font-semibold">Date : {sessionDetails.date}</p>
               <p className="text-xl font-semibold">Starting Time: {sessionDetails.time}</p>
               <p className="text-xl font-bold">End Time: {new Date(Date.now() + countdown * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p>
-              <p className="text-xl font-bold">Time left: {formatTime(countdown)}</p>
+              {/* <p className="text-xl font-bold">Time left: {formatTime(countdown)}</p> */}
             </div>
             <div className="flex justify-center items-center">
               <QRCode className="w-64" size={240} fgColor={'#66798F'} value={qrCodeData} />
