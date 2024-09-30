@@ -15,10 +15,25 @@ const Attendance = () => {
   const [warning, setWarning] = useState("");
   const [sessionDetails, setSessionDetails] = useState({});
   const [qrCodeData, setQrCodeData] = useState("");
-  const teacherName = 'Dr. Rudra Pratap Deb Nath';
+  //const teacherName = 'Dr. Rudra Pratap Deb Nath';
   const courseCode = 'CSE-413';
 
   useEffect(() => {
+
+    // Fetch teacher details
+    fetch('http://localhost:5000/api/teacher')
+      .then((res) => res.json())
+      .then((data) => {
+        setTeacherData({
+          name: data.name || "Unknown Name", // Ensure the data has a name field
+          designation: data.designation || "Unknown Designation" // Ensure the data has a designation field
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching teacher details:", error);
+      });
+
+
     fetch('http://localhost:5000/api/attendance/teacher')
       .then((res) => res.json())
       .then((data) => {
@@ -305,8 +320,8 @@ const Attendance = () => {
     <div>
       <div className="flex justify-center gap-20">
         <div className="p-10">
-          <p className="pb-1 text-3xl font-bold">Teachers' Name: Rudra Pratap Deb Nath</p>
-          <p className="pt-1 text-xl">Designation: Designation</p>
+          <p className="pb-1 text-3xl font-bold">Teachers' Name: {teacherData.name}</p>
+          <p className="pt-1 text-xl">Designation: {teacherData.designation}</p>
           <p className="pt-1 text-xl">Assigned Course: {courses.length}</p>
         </div>
         <div className="flex justify-center items-center">
@@ -365,6 +380,8 @@ const Attendance = () => {
                 <TableHead className="p-3 text-center text-lg text-black">Course Name</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Course Code</TableHead>
                  <TableHead className="p-3 text-center text-lg text-black">Program</TableHead>
+                 <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>
+                 <TableHead className="p-3 text-center text-lg text-black">Which Semester</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Type</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Semester</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>
@@ -379,6 +396,8 @@ const Attendance = () => {
                   <TableCell className="text-center">{course.course_title}</TableCell>
                   <TableCell className="text-center">{course.course_code}</TableCell>
                   <TableCell className="text-center">{course.program_abbr}</TableCell>
+                  <TableCell className="text-center">{course.session}</TableCell>
+                  <TableCell className="text-center">{course.semester}</TableCell>
                   <TableCell className="text-center">{course.course_type}</TableCell>
                   <TableCell className="text-center">{course.semester}</TableCell>
                   <TableCell className="text-center">{course.session}</TableCell>
@@ -413,7 +432,7 @@ const Attendance = () => {
           </Table>
 
           <div className="hidden">
-            <AttendanceSheet courseCode={courseCode} teacherName={teacherName} />
+            <AttendanceSheet courseCode={courseCode} teacherName="Hero" />
           </div>
         </div>
       </div>

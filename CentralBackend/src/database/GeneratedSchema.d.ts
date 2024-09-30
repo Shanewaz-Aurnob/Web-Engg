@@ -180,12 +180,14 @@ export interface CourseTeacher {
 }
 
 export interface CreateClass {
+  class_endTime: string | null;
   class_startDate: Date;
-  class_startTime: string | null;
+  class_startTime: string;
   course_id: number | null;
   duration: number;
   secret_code: string | null;
-  session: string | null;
+  session: string;
+  teacher_id: number | null;
 }
 
 export interface Department {
@@ -304,7 +306,7 @@ export interface ExamActivityFactors {
 
 export interface ExamActivityType {
   exam_activity_name: string;
-  exam_activity_type_id: number;
+  exam_activity_type_id: Generated<number>;
   exam_category: string;
 }
 
