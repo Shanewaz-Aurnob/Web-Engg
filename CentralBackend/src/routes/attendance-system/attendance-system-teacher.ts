@@ -9,7 +9,7 @@ const attendanceSystemTeacherRouter = express.Router();
 
 attendanceSystemTeacherRouter.get("/", async (req, res) => {
     try {
-        const teacherId=12345679;
+        const teacherId=5008;
 
         var query = db
         .selectFrom('Course_Teacher')
@@ -34,12 +34,14 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
     class_startTime: z.string().time(),
     duration: z.number(),
     secret_code: z.string(),
-    class_startDate: z.string().date()
+    class_startDate: z.string().date(),
+    class_endTime: z.string().time(),
+    teacher_id: z.number()
   });
   
   attendanceSystemTeacherRouter.post("/create-session", async (req, res) => {
     try {
-      const { course_id, session, class_startTime, duration, secret_code, class_startDate } = createClassReqBody.parse(req.body);
+      const { course_id, session, class_startTime, duration, secret_code, class_startDate, class_endTime , teacher_id} = createClassReqBody.parse(req.body);
   
         await db
           .insertInto("Create_Class")
@@ -49,7 +51,9 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
             class_startTime: class_startTime,
             duration: duration,
             secret_code: secret_code,
-            class_startDate: class_startDate
+            class_startDate: class_startDate,
+            class_endTime: class_endTime,
+            teacher_id: teacher_id
         })
         .executeTakeFirst();
   
@@ -69,6 +73,34 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
         });
       }
       return res.status(400).json({ message: "Invalid request body", error });
+    }
+  });
+
+  attendanceSystemTeacherRouter.get("/class", async (req, res) => {
+    // Extract query string parameters from the request
+  const sessionValue = req.query.session as string;
+  const currentDateValue = req.query.currentDate as string;
+  const currentTimeValue = req.query.currentTime as string;
+
+  // Validate the query parameters
+  if (!sessionValue || !currentDateValue || !currentTimeValue) {
+    return res.status(400).send('Missing required query parameters');
+  }
+    try {
+      // Execute the Kysely query using the extracted values
+      const result = await db
+        .selectFrom('Create_Class')
+        .selectAll()
+        .where('Create_Class.session', '=', sessionValue)
+        .where('Create_Class.class_startDate', '=', currentDateValue)
+        .where('Create_Class.class_endTime', '>=', currentTimeValue)
+        .execute();
+  
+      // Send the query result as the response
+      res.json(result);
+    } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
     }
   });
 
