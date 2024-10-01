@@ -13,32 +13,37 @@ const Attendance = () => {
   const [courses, setCourses] = useState([]);
   const [sessionActive, setSessionActive] = useState(false);
   const [warning, setWarning] = useState("");
-  const [sessionDetails, setSessionDetails] = useState({});
-  const [qrCodeData, setQrCodeData] = useState("");
+  const [studentsForThisCourse, setStudentsForThisCourse] = useState([]);
+  const [sessionCreated, setSessionCreated] = useState(false);
+  // const [sessionDetails, setSessionDetails] = useState({});
+  // const [qrCodeData, setQrCodeData] = useState("");
   //const teacherName = 'Dr. Rudra Pratap Deb Nath';
   const courseCode = 'CSE-413';
+
+  const [teacherData, setTeacherData] = useState({});
 
   useEffect(() => {
 
     // Fetch teacher details
-    fetch('http://localhost:5000/api/teacher')
+    fetch('http://localhost:5000/api/teacher/5008')
       .then((res) => res.json())
       .then((data) => {
         setTeacherData({
-          name: data.name || "Unknown Name", // Ensure the data has a name field
-          designation: data.designation || "Unknown Designation" // Ensure the data has a designation field
+          name: `${data.personal_info.first_name} ${data.personal_info.last_name}`,
+          designation: data.personal_info.designation || "Unknown Designation" 
         });
+        // console.log(data);
       })
       .catch((error) => {
         console.error("Error fetching teacher details:", error);
       });
 
 
-    fetch('http://localhost:5000/api/attendance/teacher')
+    fetch('http://localhost:5000/api/attendance/teacher?page=2')
       .then((res) => res.json())
       .then((data) => {
         setCourses(data.data);
-        console.log(data.data);
+        // console.log(data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -55,52 +60,17 @@ const Attendance = () => {
       minute: "2-digit",
     });
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
+    const generateSecretCode = () => { //for security
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      const charactersLength = characters.length;
+      for (let i = 0; i < 8; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
+    };
+  
 
-    //     if (sessionActive) {
-    //       setWarning("You can't create session more than once at a time");
-    //       return;
-    //     }
-    //     setWarning('');
-
-    //     const formData = new FormData(e.target);
-    //     const data = {
-    //         course_id: course.course_id,
-    //         course_code: formData.get('course_code'),
-    //         semester: Number(formData.get('semester')),
-    //         class_startDate: formData.get('date'),
-    //         class_startTime: `${formData.get('time')}:00`, // Append ":00" to the time
-    //         duration: Number(formData.get('minutes')),
-    //         session: formData.get('session'), // Ensure session is included in the payload
-    //         // class_endTime: ,
-    //         secret_code: "-",
-    //     };
-
-    //     console.log('Data to be sent:', data);
-
-    //     try {
-    //         const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(data),
-    //         });
-
-    //         console.log('Response status:', response.status);
-    //         const responseData = await response.json();
-    //         console.log('Response data:', responseData);
-
-    //         if (response.ok) {
-    //             console.log('Session created successfully');
-    //         } else {
-    //             console.error('Error creating session:', responseData);
-    //         }
-    //     } catch (error) {
-    //         console.error('Network error:', error);
-    //     }
-    // };
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -129,20 +99,26 @@ const Attendance = () => {
       const class_endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}:00`;
   
       const data = {
+          // teacherName: teacherData.name,
+          // teacherDesignation: teacherData.designation,
           course_id: course.course_id,
           course_code: formData.get('course_code'),
           semester: Number(formData.get('semester')),
           class_startDate: formData.get('date'),
           class_startTime: `${startTime}:00`, // Append ":00" to the start time
           duration: duration,
-          session: formData.get('session'), // Ensure session is included in the payload
+          // session: formData.get('session'), // Ensure session is included in the payload
           class_endTime: class_endTime,
-          secret_code: "-",
+          secret_code: generateSecretCode(),
           teacher_id: course.teacher_id,
+          academic_session_id: course.academic_session_id
       };
   
-      console.log('Data to be sent:', data);
+      //console.log('Data to be sent:', data);
   
+
+
+      // 1. session create er jnno post api
       try {
           const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
               method: 'POST',
@@ -154,10 +130,11 @@ const Attendance = () => {
   
           console.log('Response status:', response.status);
           const responseData = await response.json();
-          console.log('Response data:', responseData);
+          // console.log('Response data:', responseData);
   
           if (response.ok) {
               console.log('Session created successfully');
+              setSessionCreated(true);
           } else {
               console.error('Error creating session:', responseData);
           }
@@ -165,6 +142,56 @@ const Attendance = () => {
           console.error('Network error:', error);
       }
   };
+
+
+  // 2.academic_session_id er jnno fetch api
+  useEffect(() => {
+    if (!sessionCreated) return;
+  
+    fetch('http://localhost:5000/api/attendance/teacher/students-by-acc-id?academic_session_id=20190601')
+      .then((res) => res.json())
+      .then((data) => {
+        const updatedData = data.map(student => ({
+          ...student,
+          academic_session_id: course.academic_session_id
+        }));
+        setStudentsForThisCourse(updatedData);
+        console.log('The academic session students:', updatedData);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [course.academic_session_id]);
+
+
+  // 3. ekta class er sobar list attendance list e jnno post api
+  useEffect(() => {
+    if (studentsForThisCourse.length > 0) {
+      const sessionDetailsForAll = studentsForThisCourse // Ensure the key matches what the API expects
+      console.log('Second link for post:', sessionDetailsForAll);
+    
+      const postAttendance = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/attendance/teacher/create-attendance?session_id=66&date=2014-10-1', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sessionDetailsForAll),
+          });
+    
+          console.log('Response status for 2:', response.status);
+          const responseData2 = await response.json();
+          console.log(responseData2);
+        } catch (error) {
+          console.error('Network error:', error);
+        }
+      };
+    
+      postAttendance();
+    }
+    
+  }, [course.academic_session_id]);
   
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -249,73 +276,6 @@ const Attendance = () => {
 
 
 
-  const [countdown, setCountdown] = useState(0);
-
-  // const startCountdown = (totalMinutes) => {
-  //   setSessionActive(true);
-  //   const totalSeconds = totalMinutes * 60;
-  //   const endTime = Date.now() + totalSeconds * 1000;
-  //   localStorage.setItem('countdownEndTime', endTime);
-  //   setCountdown(totalSeconds);
-
-  //   const interval = setInterval(() => {
-  //     setCountdown((prevCountdown) => {
-  //       if (prevCountdown > 0) {
-  //         return prevCountdown - 1;
-  //       } else {
-  //         clearInterval(interval);
-  //         localStorage.removeItem('countdownEndTime');
-  //         setSessionActive(false);
-  //         return 0;
-  //       }
-  //     });
-  //   }, 1000);
-
-  //   return interval;
-  // };
-
-  // useEffect(() => {
-  //   const endTime = localStorage.getItem('countdownEndTime');
-  //   const savedSessionDetails = localStorage.getItem('sessionDetails');
-
-  //   if (savedSessionDetails) {
-  //     setSessionDetails(JSON.parse(savedSessionDetails));
-  //   }
-
-  //   if (endTime) {
-  //     const remainingTime = Math.floor((endTime - Date.now()) / 1000);
-  //     if (remainingTime > 0) {
-  //       setCountdown(remainingTime);
-  //       setSessionActive(true);
-  //       const interval = setInterval(() => {
-  //         setCountdown((prevCountdown) => {
-  //           if (prevCountdown > 0) {
-  //             return prevCountdown - 1;
-  //           } else {
-  //             clearInterval(interval);
-  //             localStorage.removeItem('countdownEndTime');
-  //             localStorage.removeItem('sessionDetails');
-  //             setSessionActive(false);
-  //             return 0;
-  //           }
-  //         });
-  //       }, 1000);
-  //       return () => clearInterval(interval);
-  //     } else {
-  //       localStorage.removeItem('countdownEndTime');
-  //       localStorage.removeItem('sessionDetails');
-  //     }
-  //   }
-  // }, []);
-
-  // const formatTime = (seconds) => {
-  //   const hours = Math.floor(seconds / 3600);
-  //   const minutes = Math.floor((seconds % 3600) / 60);
-  //   const remainingSeconds = seconds % 60;
-
-  //   return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  // };
-
   return (
     <div>
       <div className="flex justify-center gap-20">
@@ -336,7 +296,7 @@ const Attendance = () => {
         <hr className="border-2" style={{ borderColor: '#CCCCCC' }} />
       </div>
 
-      {countdown > 0 && (
+      {courses > 0 && (
         <div className="p-10">
           <div className="flex flex-row-reverse justify-center gap-28 ">
             <div>
@@ -351,7 +311,7 @@ const Attendance = () => {
               <p className="text-xl font-semibold">Course Code : {sessionDetails.courseCode}</p>
               <p className="text-xl font-semibold">Date : {sessionDetails.date}</p>
               <p className="text-xl font-semibold">Starting Time: {sessionDetails.time}</p>
-              <p className="text-xl font-bold">End Time: {new Date(Date.now() + countdown * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p>
+              {/* <p className="text-xl font-bold">End Time: {new Date(Date.now() + countdown * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p> */}
               {/* <p className="text-xl font-bold">Time left: {formatTime(countdown)}</p> */}
             </div>
             <div className="flex justify-center items-center">
@@ -379,9 +339,9 @@ const Attendance = () => {
                 <TableHead className="p-3 text-center text-lg text-black">S.No</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Course Name</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Course Code</TableHead>
-                 <TableHead className="p-3 text-center text-lg text-black">Program</TableHead>
-                 <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>
-                 <TableHead className="p-3 text-center text-lg text-black">Which Semester</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Program</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Which Semester</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Type</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Semester</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>

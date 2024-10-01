@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useOutletContext } from "react-router-dom";
+// import { useOutletContext } from "react-router-dom";
 import CountdownDisplay from "./CountdownDisplay";
 
 const StudentPage = () => {
-  const { ongoingSession } = useOutletContext();
+  // const { ongoingSession } = useOutletContext();
 
-  console.log(ongoingSession);
+  // console.log(ongoingSession);
   const studentId = 20701043;
   const [courses, setCourses] = useState([]);
 
