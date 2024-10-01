@@ -3,6 +3,22 @@ import QRCode from "qrcode.react"; // Import QRCode component
 import { Button } from "@/components/ui/button";
 
 const CountdownDisplay = () => {
+
+  const [sessionTime, setSessionTime] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:5000/api/attendance/teacher/class?session=2019-20&currentDate=2024-09-30&currentTime=16:17:00')
+      .then((res) => res.json())
+      .then((data) => {
+        setSessionTime(data.data);
+        console.log(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+
+
   const [countdown, setCountdown] = useState(0);
   const [sessionDetails, setSessionDetails] = useState({
     courseName: "",
@@ -70,7 +86,7 @@ const CountdownDisplay = () => {
                 <span className="text-lg">by Rudra Pratap Deb Nath.</span>
               </div>
               <div className="mb-4 text-3xl font-bold">
-                Would you like to provide attendance <br /> for the ongoing session?
+                Would you like to provide attendance <br/> for the ongoing session?
               </div>
               <p className="text-xl font-semibold">Course Name : {sessionDetails.courseName}</p>
               <p className="text-xl font-semibold">Course Code : {sessionDetails.courseCode}</p>
