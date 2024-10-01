@@ -111,6 +111,7 @@ export interface Database {
 
   //Attendance System
   Create_Class: AttendanceSystemTables.CreateClass;
+  Student_Attendance: AttendanceSystemTables.StudentAttendance;
 }
 
 export type TableName =

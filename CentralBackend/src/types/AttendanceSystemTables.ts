@@ -18,6 +18,18 @@ import {
     teacher_id: number | null;
     session_id: Generated<number>;
   }
+
+  export interface StudentAttendance {
+    date: Date | string;
+    session_id: number;
+    status: string | null;
+    student_id: number;
+    user_id: string | null;
+  }
 export type createClass = Selectable<CreateClass>;
 export type newCreateClass = Insertable<CreateClass>;
 export type updateCreateClass = Updateable<CreateClass>;
+
+export type studentAttendance = Selectable<StudentAttendance>;
+export type newStudentAttendance = Insertable<StudentAttendance>;
+export type updateStudentAttendance = Updateable<StudentAttendance>;

@@ -179,6 +179,47 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
   });
 
 
+  attendanceSystemTeacherRouter.post("/create-attendance", async (req, res) => {
+    try {
+      // Parse the incoming JSON array (from your example)
+      const students = req.body; // Assuming the request body contains the JSON array
+
+
+  
+      // Define session_id, date, and status for the attendance
+      const session_id = Number(req.query.session_id as string); // Example session_id
+      const date = req.query.currentDate as string;;  // Example date
+      const status = "Absent";  // Example status
+  
+      // Loop through each student and insert attendance records
+      const insertPromises = students.map(async (student: any) => {
+        const { student_id, user_id } = student;
+        return db
+          .insertInto("Student_Attendance")
+          .values({
+            session_id: session_id,
+            user_id: user_id,
+            student_id: student_id,
+            date: date,
+            status: status
+          })
+          .executeTakeFirst();
+      });
+  
+      // Wait for all insertions to complete
+      await Promise.all(insertPromises);
+  
+      // Send success response
+      res.status(200).send({
+        message: "Attendance records inserted successfully."
+      });
+    } catch (error) {
+      res.status(400).json({ message: "Failed to insert attendance records", error });
+    }
+  });
+  
+
+
   
   
 

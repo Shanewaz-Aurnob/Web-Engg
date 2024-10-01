@@ -619,10 +619,11 @@ export interface StudentAnnouncementFile {
 }
 
 export interface StudentAttendance {
-  course_id: number | null;
-  qr_id: number;
-  sa_time: Date | null;
+  date: Date | null;
+  session_id: number;
+  status: string | null;
   student_id: number;
+  user_id: string | null;
 }
 
 export interface StudentProgram {
