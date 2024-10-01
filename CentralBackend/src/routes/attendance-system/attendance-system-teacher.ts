@@ -30,7 +30,7 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
 
   const createClassReqBody = z.object({
     course_id: z.number(),
-    session: z.string(),
+    academic_session_id: z.number(),
     class_startTime: z.string().time(),
     duration: z.number(),
     secret_code: z.string(),
@@ -41,13 +41,13 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
   
   attendanceSystemTeacherRouter.post("/create-session", async (req, res) => {
     try {
-      const { course_id, session, class_startTime, duration, secret_code, class_startDate, class_endTime , teacher_id} = createClassReqBody.parse(req.body);
+      const { course_id, academic_session_id, class_startTime, duration, secret_code, class_startDate, class_endTime , teacher_id} = createClassReqBody.parse(req.body);
   
         await db
           .insertInto("Create_Class")
           .values({
             course_id: course_id,
-            session: session,
+            academic_session_id:academic_session_id,
             class_startTime: class_startTime,
             duration: duration,
             secret_code: secret_code,
@@ -78,12 +78,12 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
 
   attendanceSystemTeacherRouter.get("/class", async (req, res) => {
     // Extract query string parameters from the request
-  const sessionValue = req.query.session as string;
+  const academic_sessionValue = Number(req.query.academic_session_id as string);
   const currentDateValue = req.query.currentDate as string;
   const currentTimeValue = req.query.currentTime as string;
 
   // Validate the query parameters
-  if (!sessionValue || !currentDateValue || !currentTimeValue) {
+  if (!academic_sessionValue || !currentDateValue || !currentTimeValue) {
     return res.status(400).send('Missing required query parameters');
   }
     try {
@@ -91,7 +91,7 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
       const result = await db
         .selectFrom('Create_Class')
         .selectAll()
-        .where('Create_Class.session', '=', sessionValue)
+        .where('Create_Class.academic_session_id', '=', academic_sessionValue)
         .where('Create_Class.class_startDate', '=', currentDateValue)
         .where('Create_Class.class_endTime', '>=', currentTimeValue)
         .execute();
@@ -103,6 +103,32 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
       res.status(500).send('Server error');
     }
   });
+
+  attendanceSystemTeacherRouter.get("/students-by-acc-id", async (req, res) => {
+    // Extract query string parameters from the request
+  const academic_sessionValue = Number(req.query.academic_session_id as string);
+  
+
+  // Validate the query parameters
+  if (!academic_sessionValue ) {
+    return res.status(400).send('Missing required query parameters');
+  }
+    try {
+      // Execute the Kysely query using the extracted values
+      const result = await db
+      .selectFrom('Student')
+      .selectAll()
+      .where('Student.academic_session_id', '=', academic_sessionValue)
+      .execute();
+  
+      // Send the query result as the response
+      res.json(result);
+    } catch (error) {
+      console.error('Error executing query:', error);
+      res.status(500).send('Server error');
+    }
+  });
+
 
   
   

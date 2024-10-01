@@ -14,8 +14,9 @@ import {
     course_id: number | null;
     duration: number;
     secret_code: string | null;
-    session: string | null;
+    academic_session_id: number | null;
     teacher_id: number | null;
+    session_id: Generated<number>;
   }
 export type createClass = Selectable<CreateClass>;
 export type newCreateClass = Insertable<CreateClass>;

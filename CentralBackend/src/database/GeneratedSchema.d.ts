@@ -43,6 +43,12 @@ export interface AdministrativeExperinece {
   teacher_id: number;
 }
 
+export interface AssignCourse {
+  Course_code: string;
+  Department_name: string;
+  Teacher_name: string;
+}
+
 export interface AssignTask {
   assign_by: string | null;
   assign_date: Generated<Date | null>;
@@ -180,13 +186,14 @@ export interface CourseTeacher {
 }
 
 export interface CreateClass {
+  academic_session_id: number | null;
   class_endTime: string | null;
   class_startDate: Date;
   class_startTime: string;
   course_id: number | null;
   duration: number;
   secret_code: string | null;
-  session: string;
+  session_id: Generated<number>;
   teacher_id: number | null;
 }
 
@@ -715,6 +722,7 @@ export interface DB {
   Accomplishment: Accomplishment;
   Address: Address;
   Administrative_experinece: AdministrativeExperinece;
+  Assign_course: AssignCourse;
   Assign_Task: AssignTask;
   Auth_Session: AuthSession;
   Award: Award;
