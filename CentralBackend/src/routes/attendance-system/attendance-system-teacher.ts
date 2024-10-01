@@ -41,27 +41,37 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
   
   attendanceSystemTeacherRouter.post("/create-session", async (req, res) => {
     try {
-      const { course_id, academic_session_id, class_startTime, duration, secret_code, class_startDate, class_endTime , teacher_id} = createClassReqBody.parse(req.body);
+      const {
+        course_id,
+        academic_session_id,
+        class_startTime,
+        duration,
+        secret_code,
+        class_startDate,
+        class_endTime,
+        teacher_id
+      } = createClassReqBody.parse(req.body);
   
-        await db
-          .insertInto("Create_Class")
-          .values({
-            course_id: course_id,
-            academic_session_id:academic_session_id,
-            class_startTime: class_startTime,
-            duration: duration,
-            secret_code: secret_code,
-            class_startDate: class_startDate,
-            class_endTime: class_endTime,
-            teacher_id: teacher_id
+      // Insert data and return the inserted row, including the auto-generated session_id
+      const insertedRow = await db
+        .insertInto("Create_Class")
+        .values({
+          course_id: course_id,
+          academic_session_id: academic_session_id,
+          class_startTime: class_startTime,
+          duration: duration,
+          secret_code: secret_code,
+          class_startDate: class_startDate,
+          class_endTime: class_endTime,
+          teacher_id: teacher_id
         })
+        .returningAll()  // This returns all columns of the inserted row
         .executeTakeFirst();
   
-        
-  
-      // Return the session id
+      // Return the inserted row as the response
       res.status(200).send({
         message: "Data Inserted Successfully in Create_Class Table.",
+        data: insertedRow,  // Returning the inserted row data
       });
     } catch (error) {
       var typeError: z.ZodError | undefined;
@@ -75,6 +85,7 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
       return res.status(400).json({ message: "Invalid request body", error });
     }
   });
+  
 
   attendanceSystemTeacherRouter.get("/class", async (req, res) => {
     // Extract query string parameters from the request
@@ -126,6 +137,43 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
     } catch (error) {
       console.error('Error executing query:', error);
       res.status(500).send('Server error');
+    }
+  });
+
+  attendanceSystemTeacherRouter.post("/add-students", async (req, res) => {
+    try {
+      const { course_id, academic_session_id, class_startTime, duration, secret_code, class_startDate, class_endTime , teacher_id} = createClassReqBody.parse(req.body);
+  
+        await db
+          .insertInto("Create_Class")
+          .values({
+            course_id: course_id,
+            academic_session_id:academic_session_id,
+            class_startTime: class_startTime,
+            duration: duration,
+            secret_code: secret_code,
+            class_startDate: class_startDate,
+            class_endTime: class_endTime,
+            teacher_id: teacher_id
+        })
+        .executeTakeFirst();
+  
+        
+  
+      // Return the session id
+      res.status(200).send({
+        message: "Data Inserted Successfully in Create_Class Table.",
+      });
+    } catch (error) {
+      var typeError: z.ZodError | undefined;
+      if (error instanceof z.ZodError) {
+        typeError = error as z.ZodError;
+        return res.status(400).json({
+          name: "Invalid data type.",
+          message: JSON.parse(typeError.message),
+        });
+      }
+      return res.status(400).json({ message: "Invalid request body", error });
     }
   });
 
