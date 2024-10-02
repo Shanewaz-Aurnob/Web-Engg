@@ -318,7 +318,68 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
   });
   
   
-  
+  const semesterResult = z.object({
+    student_id: z.coerce.number()
+})
+  attendanceSystemTeacherRouter.get("/courses", async (req, res) => {
+  try {
+      const {
+          student_id
+      } = semesterResult.parse(req.query);
+
+      const query = db
+      .selectFrom("Student")
+      .where("Student.student_id", "=", student_id)
+      .select(["Student.academic_session_id as academic_session_id"])
+      
+
+      const academic_session_id = await query.execute();
+
+      const query1 = db
+      .selectFrom("Course_Teacher")
+      .distinct()
+      .where("Course_Teacher.academic_session_id", "=", academic_session_id[0].academic_session_id)
+      .select(["Course_Teacher.course_id as course_id"])
+
+      const courses = await query1.execute();
+
+      const coursesPromise = courses.map( async (course_id, ind) => {
+          const query2 = 
+          db
+          .selectFrom("Course")
+          .where("Course.course_id", "=", course_id.course_id)
+          .selectAll()
+          const query3= db.selectFrom("Create_Class")
+          .where("Create_Class.course_id", "=", course_id.course_id)
+          .selectAll()
+          const result2 = await query3.execute();
+
+          const result = await query2.execute();
+
+          const query4=db.selectFrom("Student_Attendance")
+          .where("Student_Attendance.student_id" ,"=", student_id)
+          .where("Student_Attendance.status", "=", "P")
+          .innerJoin("Create_Class", "Create_Class.session_id", "Student_Attendance.session_id")
+        .selectAll()
+        const result3= await query4.execute();
+          return {...result[0], total_held_class: result2.length, attended_classes: result3.length};
+      
+      })
+      const allCourses = await Promise.all(coursesPromise);
+
+      return res.status(200).json(allCourses);
+
+  } catch (error) {
+      if (error instanceof z.ZodError) {
+          return res.status(400).json({
+              name: "Invalid academic session id",
+              message: JSON.parse(error.message),
+          });
+      }
+      return res.status(500).json({ message: "Internal server error", error});
+  }
+})
+
   
   
 
