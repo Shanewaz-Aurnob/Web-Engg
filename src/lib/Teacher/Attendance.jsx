@@ -9,16 +9,14 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@
 import AttendanceSheet from "./AttendanceSheet";
 import QRCode from "qrcode.react";
 
+
 const Attendance = () => {
   const [courses, setCourses] = useState([]);
   const [sessionActive, setSessionActive] = useState(false);
   const [warning, setWarning] = useState("");
   const [studentsForThisCourse, setStudentsForThisCourse] = useState([]);
-  const [sessionCreated, setSessionCreated] = useState(false);
   const [sessionIDforAPi, setSessionIDforAPi] = useState("");
-  // const [sessionDetails, setSessionDetails] = useState({});
-  // const [qrCodeData, setQrCodeData] = useState("");
-  //const teacherName = 'Dr. Rudra Pratap Deb Nath';
+
   const courseCode = 'CSE-413';
 
   const [teacherData, setTeacherData] = useState({});
@@ -131,6 +129,7 @@ const Attendance = () => {
         const newSessionID = dataSessionID.data.session_id; // Get the session ID directly
         console.log("Newly created session ID:", newSessionID);
         setSessionIDforAPi(newSessionID); // Store it in state
+        setSessionActive(true);
     
         // Use the new session ID for the next API call
         const studentsResponse = await fetch(`http://localhost:5000/api/attendance/teacher/students-by-acc-id?academic_session_id=${course.academic_session_id}`);
@@ -177,7 +176,6 @@ const Attendance = () => {
     
   };
   
-
 
   
     return (
@@ -262,6 +260,94 @@ const Attendance = () => {
 };
 
 
+const [sessionTime, setSessionTime] = useState(null);
+  const [qrCodeData, setQrCodeData] = useState(""); // State to store QR code data
+  const [countdown, setCountdown] = useState(0);
+  // const [secretCode, setSecretCode] = useState('');
+
+
+
+useEffect(() => {
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    // const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    const currentDate = `${year}-${month}-${day}`;
+    const currentTime = `${hours}:${minutes}:00`;
+
+    return { currentDate, currentTime };
+  };
+
+  const { currentDate, currentTime } = getCurrentDateTime();
+  const url = `http://localhost:5000/api/attendance/teacher/class?academic_session_id=20180801&currentDate=${currentDate}&currentTime=${currentTime}`;
+  // console.log(url);
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => {
+      setSessionTime(data[0]);
+      console.log(data[0]);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}, []);
+
+useEffect(() => {
+  if (!sessionTime) return;
+  
+  // Set the QR code data based on sessionTime
+  setQrCodeData(`
+    Session Time: ${sessionTime.class_startTime} - ${sessionTime.class_endTime}, 
+    Attandance code : ${sessionTime.secret_code}`);
+
+  const calculateCountdown = () => {
+    const now = new Date();
+    const currentHours = now.getHours();
+    const currentMinutes = now.getMinutes();
+    const currentSeconds = now.getSeconds();
+    setSessionActive(true);
+
+    const [endHours, endMinutes, endSeconds] = sessionTime.class_endTime.split(':').map(Number);
+    
+    const endTimeInSeconds = endHours * 3600 + endMinutes * 60 + endSeconds;
+    const currentTimeInSeconds = currentHours * 3600 + currentMinutes * 60 + currentSeconds;
+
+    const timeDiffInSeconds = endTimeInSeconds - currentTimeInSeconds;
+
+    if (timeDiffInSeconds <= 0) {
+      setCountdown('Session has ended');
+      setSessionActive(false);
+      return;
+    }
+
+    const hours = Math.floor(timeDiffInSeconds / 3600);
+    const minutes = Math.floor((timeDiffInSeconds % 3600) / 60);
+    const seconds = timeDiffInSeconds % 60;
+
+    // console.log("time", hours, minutes, seconds);
+
+    setCountdown(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+  };
+
+  const intervalId = setInterval(calculateCountdown, 1000);
+
+  return () => clearInterval(intervalId);
+}, [sessionTime]);
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based in JavaScript
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+
 
   return (
     <div>
@@ -283,7 +369,7 @@ const Attendance = () => {
         <hr className="border-2" style={{ borderColor: '#CCCCCC' }} />
       </div>
 
-      {courses > 0 && (
+      { sessionTime &&(
         <div className="p-10">
           <div className="flex flex-row-reverse justify-center gap-28 ">
             <div>
@@ -291,16 +377,12 @@ const Attendance = () => {
                 Currently a session is conducted <br />
                 {/* <span className="text-lg"></span> */}
               </div>
-              <div className="mb-4 text-3xl font-bold">
-                Would you like to provide attendance <br /> for the ongoing session?
+                <p className="text-xl font-semibold">Date : {formatDate(sessionTime.class_startDate)}</p>
+                <p className="text-xl font-semibold">Starting Time: {sessionTime.class_startTime}</p>
+                <p className="text-xl font-semibold">Time left: {countdown}</p>
+                <p className="text-xl font-semibold">End Time: {sessionTime.class_endTime}</p>
+                <p className="text-xl font-semibold">End Time: {sessionTime.duration} minutes</p>
               </div>
-              <p className="text-xl font-semibold">Course Name : {sessionDetails.courseName}</p>
-              <p className="text-xl font-semibold">Course Code : {sessionDetails.courseCode}</p>
-              <p className="text-xl font-semibold">Date : {sessionDetails.date}</p>
-              <p className="text-xl font-semibold">Starting Time: {sessionDetails.time}</p>
-              {/* <p className="text-xl font-bold">End Time: {new Date(Date.now() + countdown * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p> */}
-              {/* <p className="text-xl font-bold">Time left: {formatTime(countdown)}</p> */}
-            </div>
             <div className="flex justify-center items-center">
               <QRCode className="w-64" size={240} fgColor={'#66798F'} value={qrCodeData} />
               </div>
@@ -349,19 +431,14 @@ const Attendance = () => {
                   <TableCell className="text-center">{course.semester}</TableCell>
                   <TableCell className="text-center">{course.session}</TableCell>
                   <TableCell className="text-center">
-                    <Link to={`/courseDetails/${course.course_code}`}>
+                    <Link to={`/courseDetails/${course.course_code}`} state={{myObj: course}}>
                       <Button>View details</Button>
                     </Link>
                   </TableCell>
                   <TableCell className="text-center">
                     <Popover>
                       <PopoverTrigger>
-                        <Button onClick={(e) => {
-                          if (sessionActive) {
-                            e.preventDefault();
-                            setWarning("You can't create session more than once at a time");
-                          }
-                        }}>Create Session</Button>
+                        <Button >Create Session</Button>
                       </PopoverTrigger>
                       {!sessionActive && (
                         <PopoverContent

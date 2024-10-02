@@ -1,117 +1,129 @@
-import { Table,
-    TableHeader,
-    TableBody,
-    // TableFooter,
-    // TableHead,
-    TableRow,
-    TableCell,
-    TableCaption,
-    TableHead, } from "@/components/ui/table";
-import { Link, useLoaderData, useParams } from 'react-router-dom';
+/* eslint-disable no-unsafe-optional-chaining */
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableCaption, TableHead } from "@/components/ui/table";
 import { FaArrowLeft } from 'react-icons/fa';
 import AttendanceSheet from "./AttendanceSheet";
 import { Button } from "@/components/ui/button";
 import { usePDF } from 'react-to-pdf';
 import { useEffect, useState } from "react";
+import { Link, } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+// import { useEffect } from 'react';
 
 
 
 const CourseDetails = () => {
-
-
     const [details, setDetails] = useState({});
+    const [sessions, setSessions] = useState([]);
+    const [studentData, setStudentData] = useState([]);
+    // const [courses, setCourses] = useState([]);
 
-    useEffect(() => {
-  
-      // Fetch course details
-      fetch('http://localhost:5000/api/attendance/teacher/get-attendance?course_id=5&academic_session_id=20180801')
-        .then((res) => res.json())
-        .then((data) => {
-          setDetails(data);
-          console.log(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching teacher details:", error);
-        });
-  
-    }, []);
+    const {state} = useLocation();
+console.log(state);
 
+  useEffect(() => {
+    console.log('Location state:', location.state);
+    if (state) {
+      console.log('state:', state.myObj.course_title);
+    } else {
+      console.log('No course data available');
+    }
+  }, [state]);
+   
 
     const teacherName='Dr. Rudra Pratap Deb Nath'
     const courseCode ='CSE-413'
 
-    // Function to calculate average marks
-const calculateAverage = (marks) => {
-    const totalMarks = marks.reduce((sum, mark) => sum + mark, 0);
-    const average = totalMarks / marks.length;
-    return average.toFixed(2); // Round to 2 decimal places
-};
-const avgAttendace = (attanded) => {
-    const totalHeldClasses = Details.total_held_classes;
-    const average = (attanded / totalHeldClasses) * 100 ;
-    console.log(" avg class ", average);
-    return average.toFixed(2); // Round to 2 decimal places
-};
+    useEffect(() => {
+        // Fetch course details
+        fetch('http://localhost:5000/api/attendance/teacher/get-attendance?course_id=5&academic_session_id=20180801')
+            .then((res) => res.json())
+            .then((data) => {
+                setDetails(data);
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching teacher details:", error);
+            });
+    }, []);
 
-const { toPDF, targetRef } = usePDF({filename: 'attendance.pdf'});
+    useEffect(() => {
+        if (details) {
+            const sessionData = [];
+            const students = {};
 
-    // const { id } = useParams();
-    // const details = useLoaderData();
-    // const Details = details.find(details => details.id === id)
-    // // console.log( id);
-    
+            // Aggregate all sessions from the details object
+            Object.values(details).forEach(sessionsArray => {
+                sessionsArray.forEach(session => {
+                    sessionData.push(session);
+                    session.students.forEach(student => {
+                        if (!students[student.id]) {
+                            students[student.id] = { id: student.id, attendance: {} };
+                        }
+                        students[student.id].attendance[session.date] = student.status;
+                    });
+                });
+            });
+
+            setSessions(sessionData);
+            // Set student data
+            setStudentData(Object.values(students));
+        }
+    }, [details]);
+
+    // Extract unique dates from session data
+    const uniqueDates = [...new Set(sessions.map(session => session.date))];
+
+    // Calculate total classes held
+    const totalClassesHeld = uniqueDates.length;
+
+    const { toPDF, targetRef } = usePDF({ filename: 'attendance.pdf' });
+
     return (
-        <div className="m-10 ">
+        <div className="m-10">
             <div className="mb-4">
                 <Link to="/attendance"><button className="flex items-center text-[#0C496D]">
                     <FaArrowLeft className="mr-1" /> Back
                 </button></Link>
             </div>
 
-            {/* <h1 className="text-3xl mb-4 font-bold text-center">{Details.course_name} Details</h1> */}
-            {/* <h3 className="text-xl mb-6 font-bold text-center">Total Held Classes: {Details.total_held_classes}</h3> */}
-            {/* <div>
+            <h1 className="text-3xl mb-4 font-bold text-center">{state.myObj.course_title} Details</h1>
+            <h3 className="text-xl mb-6 font-bold text-center">Total Held Classes: {uniqueDates.length}</h3>
+            
+            <div>
                 <Button onClick={() => toPDF()}>Download PDF</Button>
             </div>
             <Table>
-                <TableCaption>{Details.course_name} Details</TableCaption>
-                <TableHeader >
+                <TableCaption>{state.myObj.course_title} Details</TableCaption>
+                <TableHeader>
                     <TableRow>
-                        <TableHead className="p-3 text-center text-lg text-black">Student Name</TableHead>
                         <TableHead className="p-3 text-center text-lg text-black">Student Id</TableHead>
-                        <TableHead className="p-3 text-center text-lg text-black">1st CATM</TableHead>
-                        <TableHead className="p-3 text-center text-lg text-black">2nd CATM</TableHead>
-                        <TableHead className="p-3 text-center text-lg text-black">3rd CATM</TableHead>
-                        <TableHead className="p-3 text-center text-lg text-black">Average Marks</TableHead>
                         <TableHead className="p-3 text-center text-lg text-black">Attended Classes</TableHead>
                         <TableHead className="p-3 text-center text-lg text-black">Average Attendance</TableHead>
                         <TableHead className="p-3 text-center text-lg text-black">Attendance Mark</TableHead>
-                        <TableHead className="p-3 text-center text-lg text-black">Total Mark (CTMA + Attendance)</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {Details.students.map(student => (
-                        <TableRow key={student.name}>
-                            <TableCell className=" text-center ">{student.name}</TableCell>
-                            <TableCell className=" text-center ">{student.student_id}</TableCell>
-                            <TableCell className=" text-center ">{student.ctma_marks[0]}</TableCell>
-                            <TableCell className=" text-center ">{student.ctma_marks[1]}</TableCell>
-                            <TableCell className=" text-center ">{student.ctma_marks[2]}</TableCell>
-                            <TableCell className=" text-center ">{calculateAverage(student.ctma_marks)}</TableCell>
-                            <TableCell className=" text-center ">{student.attended}</TableCell>
-                            <TableCell className=" text-center ">{avgAttendace(student.attended)}</TableCell>
-                            <TableCell className=" text-center ">{(avgAttendace(student.attended) * (7.5 / 100)).toFixed(2)}</TableCell>
-                            <TableCell className=" text-center "> {((Number(avgAttendace(student.attended)) * 0.075) + Number(calculateAverage(student.ctma_marks))).toFixed(2)}
-                            </TableCell>
+                    {studentData.map(student => {
+                        const totalPresent = uniqueDates.filter(date => student.attendance[date] === 'P').length;
+                        const totalPercentage = ((totalPresent / totalClassesHeld) * 100).toFixed(2);
+                        return (
+                            <TableRow key={student.id}>
+                                <TableCell className="text-center">{student.id}</TableCell>
+                                <TableCell className="text-center">{totalPresent}</TableCell>
+                                <TableCell className="text-center">{totalPercentage}%</TableCell>
+                                <TableCell className="text-center">{(totalPercentage) * 0.075}</TableCell>
+                            </TableRow>
 
-                        </TableRow>
-                    ))}
+                        );
+                    })}
+
+                    
                 </TableBody>
-            </Table> */}
+            </Table>
 
 
             <div ref={targetRef} 
-            // style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}
+            style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}
             >
                 <AttendanceSheet courseCode={courseCode} teacherName={teacherName} details={details}/>
             </div>

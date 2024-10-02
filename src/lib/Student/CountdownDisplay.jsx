@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode.react"; // Import QRCode component
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const CountdownDisplay = () => {
@@ -9,6 +9,8 @@ const CountdownDisplay = () => {
   const [qrCodeData, setQrCodeData] = useState(""); // State to store QR code data
   const [countdown, setCountdown] = useState(0);
   const [secretCode, setSecretCode] = useState('');
+
+  const id = 20180801;
 
   useEffect(() => {
     const getCurrentDateTime = () => {
@@ -27,7 +29,7 @@ const CountdownDisplay = () => {
     };
   
     const { currentDate, currentTime } = getCurrentDateTime();
-    const url = `http://localhost:5000/api/attendance/teacher/class?academic_session_id=20180801&currentDate=${currentDate}&currentTime=${currentTime}`;
+    const url = `http://localhost:5000/api/attendance/teacher/class?academic_session_id=${id}&currentDate=${currentDate}&currentTime=${currentTime}`;
     // console.log(url);
     fetch(url)
       .then((res) => res.json())
@@ -46,8 +48,7 @@ const CountdownDisplay = () => {
     // Set the QR code data based on sessionTime
     setQrCodeData(`
       Session Time: ${sessionTime.class_startTime} - ${sessionTime.class_endTime}, 
-      Attandance code : ${sessionTime.secret_code
-    }`);
+      Attandance code : ${sessionTime.secret_code}`);
 
     const calculateCountdown = () => {
       const now = new Date();
@@ -88,7 +89,7 @@ const CountdownDisplay = () => {
         
         // Prepare the data to be sent to the API
         const data = {
-           student_id:19701008,
+           student_id:19701015,
            session_id: sessionTime.session_id
         };
 
@@ -120,6 +121,13 @@ const CountdownDisplay = () => {
     }
 };
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based in JavaScript
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
   const handleInputChange = (e) => {
     setSecretCode(e.target.value);
@@ -138,7 +146,7 @@ const CountdownDisplay = () => {
               <div className="mb-4 text-3xl font-bold">
                 Would you like to provide attendance <br/> for the ongoing session?
               </div>
-              <p className="text-xl font-semibold">Date : {sessionTime.class_startDate}</p>
+              <p className="text-xl font-semibold">Date : {formatDate(sessionTime.class_startDate)}</p>
               <p className="text-xl font-semibold">Starting Time: {sessionTime.class_startTime}</p>
               <p className="text-xl font-semibold">Time left: {countdown}</p>
               <p className="text-xl font-semibold">End Time: {sessionTime.class_endTime}</p>

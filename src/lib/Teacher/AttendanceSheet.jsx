@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import logo from '../../assets/cuLogo.png';
 
-const AttendanceSheet = ({ courseCode, teacherName, details }) => {
+const AttendanceSheet = ({  teacherName, details }) => {
   const [sessions, setSessions] = useState([]);
   const [studentData, setStudentData] = useState([]);
 

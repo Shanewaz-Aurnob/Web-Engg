@@ -33,7 +33,6 @@ const router = createBrowserRouter([
       {
         path: '/courseDetails/:id',
         element:<CourseDetails></CourseDetails>,
-        loader: () =>fetch('/data.json')
       },
       {
         path:'/staffPage',
