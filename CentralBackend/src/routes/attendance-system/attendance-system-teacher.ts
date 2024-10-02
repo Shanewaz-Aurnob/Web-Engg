@@ -221,14 +221,14 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
   attendanceSystemTeacherRouter.get("/get-attendance", async (req, res) => {
     try {
       // Parse the query parameters
-      const course_code = Number(req.query.course_code as string);
+      const course_id = Number(req.query.course_id as string);
       const academic_session_id = Number(req.query.academic_session_id as string);
   
       // Find the session IDs for the given course code and academic session
       const sessions = await db
         .selectFrom("Create_Class")
         .select(["session_id", "class_startDate"])
-        .where("course_id", "=", course_code)
+        .where("course_id", "=", course_id)
         .where("academic_session_id", "=", academic_session_id)
         .execute();
   
