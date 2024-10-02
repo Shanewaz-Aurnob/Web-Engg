@@ -3,29 +3,36 @@ import { useEffect, useState } from 'react';
 import logo from '../../assets/cuLogo.png';
 
 const AttendanceSheet = ({ courseCode, teacherName, details }) => {
-  // const [courseDetails, setCourseDetails] = useState({
-  //   semester: '4',
-  //   session: '2019-2020',
-  //   course_code: 'CSE-413'
-  // });
+  const [sessions, setSessions] = useState([]);
+  const [studentData, setStudentData] = useState([]);
 
-  
+  useEffect(() => {
+    if (details) {
+      const sessionData = [];
+      const students = {};
 
-  
-    console.log(details)
-    // Accessing student IDs
-    // if (details && details["150"] && details["150"][0].students) {
-      const studentIDs = details["150"][0].students.map(student => student.id);
-      console.log(studentIDs); // Output the student IDs to the console
-   
+      // Aggregate all sessions from the details object
+      Object.values(details).forEach(sessionsArray => {
+        sessionsArray.forEach(session => {
+          sessionData.push(session);
+          session.students.forEach(student => {
+            if (!students[student.id]) {
+              students[student.id] = { id: student.id, attendance: {} };
+            }
+            students[student.id].attendance[session.date] = student.status;
+          });
+        });
+      });
 
-  // const calculateAttendance = (attendance) => {
-  //   const totalPresent = attendance.filter(day => day === 'P').length;
-  //   const totalPercentage = ((totalPresent / attendance.length) * 100).toFixed(2);
-  //   return { totalPresent, totalPercentage };
-  // };
+      setSessions(sessionData);
 
-  // const daysInMonth = getDaysInMonth(month, year);
+      // Set student data
+      setStudentData(Object.values(students));
+    }
+  }, [details]);
+
+  // Extract unique dates from session data
+  const uniqueDates = [...new Set(sessions.map(session => session.date))];
 
   return (
     <div className="p-4 flex flex-col justify-center items-center">
@@ -33,35 +40,34 @@ const AttendanceSheet = ({ courseCode, teacherName, details }) => {
       <div className="text-center my-4">
         <h1 className="font-bold text-xl">University of Chittagong</h1>
         <h2>Department of Computer Science and Engineering</h2>
-        {/* <p>Semester: {courseDetails.semester}</p>
-        <p>Session: {courseDetails.session}</p>
-        <p>Course Code: {courseDetails.course_code}</p> */}
         <p>Course Teacher: {teacherName}</p>
       </div>
       <table className="w-full bg-white border-2 border-black">
         <thead>
           <tr>
-            <th className="py-2 border">Roll No</th>
-            {/* <th className="py-2 border">Name</th> */}
-            {/* {Array.from({ length: daysInMonth }, (_, i) => (
-              <th key={i} className="py-2 border">{month}/{i + 1}jk</th>
-            ))} */}
+            <th className="py-2 border">ID</th>
+            {uniqueDates.map((date, index) => (
+              <th key={index} className="py-2 border">{date}</th>
+            ))}
             <th className="py-2 border">Total Present</th>
             <th className="py-2 border">Total Percentage</th>
           </tr>
         </thead>
         <tbody>
-          {studentIDs.map(student => {
-            // const { totalPresent, totalPercentage } = calculateAttendance(student.attendance);
+          {studentData.map(student => {
+            const totalPresent = uniqueDates.filter(date => student.attendance[date] === 'P').length;
+            const totalPercentage = ((totalPresent / uniqueDates.length) * 100).toFixed(2);
+
             return (
-              <tr key={student.rollNo}>
+              <tr key={student.id}>
                 <td className="border px-4 py-2">{student.id}</td>
-                {/* <td className="border px-4 py-2">{student.name}</td> */}
-                {/* {student.attendance.map((status, index) => (
-                  <td key={index} className="border px-4 py-2">{status}</td>
-                ))} */}
-                <td className="border px-4 py-2">333333</td>
-                {/* <td className="border px-4 py-2">{totalPercentage}%</td> */}
+                {uniqueDates.map((date, index) => (
+                  <td key={index} className="border px-4 py-2">
+                    {student.attendance[date] || 'N/A'}
+                  </td>
+                ))}
+                <td className="border px-4 py-2">{totalPresent}</td>
+                <td className="border px-4 py-2">{totalPercentage}%</td>
               </tr>
             );
           })}
