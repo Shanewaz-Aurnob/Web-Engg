@@ -72,126 +72,119 @@ const Attendance = () => {
   
 
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      if (sessionActive) {
-          setWarning("You can't create session more than once at a time");
-          return;
-      }
-      setWarning('');
-  
-      const formData = new FormData(e.target);
-      const startTime = formData.get('time');
-      const duration = Number(formData.get('minutes'));
-  
-      // Split the start time into hours and minutes
-      const [startHour, startMinute] = startTime.split(':').map(Number);
-  
-      // Calculate the total minutes
-      let totalMinutes = startHour * 60 + startMinute + duration;
-  
-      // Calculate the end hours and minutes
-      const endHour = Math.floor(totalMinutes / 60);
-      const endMinute = totalMinutes % 60;
-  
-      // Format end time to "HH:MM:SS"
-      const class_endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}:00`;
-  
-      const data = {
-          // teacherName: teacherData.name,
-          // teacherDesignation: teacherData.designation,
-          course_id: course.course_id,
-          course_code: formData.get('course_code'),
-          semester: Number(formData.get('semester')),
-          class_startDate: formData.get('date'),
-          class_startTime: `${startTime}:00`, // Append ":00" to the start time
-          duration: duration,
-          // session: formData.get('session'), // Ensure session is included in the payload
-          class_endTime: class_endTime,
-          secret_code: generateSecretCode(),
-          teacher_id: course.teacher_id,
-          academic_session_id: course.academic_session_id
-      };
-  
-      //console.log('Data to be sent:', data);
-  
-
-
-      // 1. session create er jnno post api
-      try {
-          const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data),
-          });
-  
-          console.log('Response status:', response.status);
-          const responseData = await response.json();
-          // console.log('Response data:', responseData);
-  
-          if (response.ok) {
-              console.log('Session created successfully');
-              setSessionCreated(true);
-          } else {
-              console.error('Error creating session:', responseData);
-          }
-      } catch (error) {
-          console.error('Network error:', error);
-      }
-  };
 
 
   // 2.academic_session_id er jnno fetch api
-  useEffect(() => {
-    if (!sessionCreated) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
   
-    fetch('http://localhost:5000/api/attendance/teacher/students-by-acc-id?academic_session_id=20190601')
-      .then((res) => res.json())
-      .then((data) => {
-        const updatedData = data.map(student => ({
-          ...student,
-          academic_session_id: course.academic_session_id
-        }));
-        setStudentsForThisCourse(updatedData);
-        console.log('The academic session students:', updatedData);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [course.academic_session_id]);
-
-
-  // 3. ekta class er sobar list attendance list e jnno post api
-  useEffect(() => {
-    if (studentsForThisCourse.length > 0) {
-      const sessionDetailsForAll = studentsForThisCourse // Ensure the key matches what the API expects
-      console.log('Second link for post:', sessionDetailsForAll);
-    
-      const postAttendance = async () => {
-        try {
-          const response = await fetch('http://localhost:5000/api/attendance/teacher/create-attendance?session_id=66&date=2014-10-1', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sessionDetailsForAll),
-          });
-    
-          console.log('Response status for 2:', response.status);
-          const responseData2 = await response.json();
-          console.log(responseData2);
-        } catch (error) {
-          console.error('Network error:', error);
-        }
-      };
-    
-      postAttendance();
+    if (sessionActive) {
+      setWarning("You can't create session more than once at a time");
+      return;
     }
-    
-  }, [course.academic_session_id]);
+    setWarning('');
+  
+    const formData = new FormData(e.target);
+    const startTime = formData.get('time');
+    const duration = Number(formData.get('minutes'));
+  
+    // Split the start time into hours and minutes
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+  
+    // Calculate the total minutes
+    let totalMinutes = startHour * 60 + startMinute + duration;
+  
+    // Calculate the end hours and minutes
+    const endHour = Math.floor(totalMinutes / 60);
+    const endMinute = totalMinutes % 60;
+  
+    // Format end time to "HH:MM:SS"
+    const class_endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}:00`;
+  
+    const data = {
+      course_id: course.course_id,
+      course_code: formData.get('course_code'),
+      semester: Number(formData.get('semester')),
+      class_startDate: formData.get('date'),
+      class_startTime: `${startTime}:00`,
+      duration: duration,
+      class_endTime: class_endTime,
+      secret_code: generateSecretCode(),
+      teacher_id: course.teacher_id,
+      academic_session_id: course.academic_session_id
+    };
+  
+    try {
+      // First API call
+      const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to create session');
+      }
+  
+      setSessionCreated(true);
+      console.log('Session created successfully');
+  
+      // Second API call
+      const studentsResponse = await fetch(`http://localhost:5000/api/attendance/teacher/students-by-acc-id?academic_session_id=${course.academic_session_id}`);
+      if (!studentsResponse.ok) {
+        throw new Error('Failed to fetch students');
+      }
+      if (response.ok) {
+                  console.log('Response status for 2:', response.status);
+                  // setHasPostedAttendance(true); // Mark as posted
+                } else {
+                  const responseData2 = await response.json();
+                  console.log('response data 2 :' , responseData2);
+                  if (responseData2.error && responseData2.error.code === 'ER_DUP_ENTRY') {
+                    console.log('Duplicate entry detected');
+                  } else {
+                    console.log('Failed to post attendance:', responseData2);
+                  }
+                }
+      const studentsData = await studentsResponse.json();
+      const updatedData = studentsData.map(student => ({
+        ...student,
+        academic_session_id: course.academic_session_id
+      }));
+      setStudentsForThisCourse(updatedData);
+      console.log('The academic session students:', updatedData);
+  
+      // Third API call
+      const sessionDetailsForAll = updatedData;
+      const attendanceResponse = await fetch('http://localhost:5000/api/attendance/teacher/create-attendance?session_id=50&currentDate=2014-10-2', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sessionDetailsForAll),
+      });
+  
+      if (!attendanceResponse.ok) {
+        const attendanceData = await attendanceResponse.json();
+        if (attendanceData.error && attendanceData.error.code === 'ER_DUP_ENTRY') {
+          console.log('Duplicate entry detected');
+        } else {
+          throw new Error('Failed to post attendance');
+        }
+      }
+  
+      // setHasPostedAttendance(true); // Mark as posted
+      console.log('Attendance posted successfully');
+  
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+
+
   
     return (
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -24,7 +24,7 @@ const CountdownDisplay = () => {
     };
   
     const { currentDate, currentTime } = getCurrentDateTime();
-    const url = `http://localhost:5000/api/attendance/teacher/class?academic_session_id=20190601&currentDate=${currentDate}&currentTime=${currentTime}`;
+    const url = `http://localhost:5000/api/attendance/teacher/class?academic_session_id=20180801&currentDate=${currentDate}&currentTime=${currentTime}`;
     // console.log(url);
     fetch(url)
       .then((res) => res.json())
