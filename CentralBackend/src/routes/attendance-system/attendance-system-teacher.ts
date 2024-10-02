@@ -189,7 +189,7 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
       // Define session_id, date, and status for the attendance
       const session_id = Number(req.query.session_id as string); // Example session_id
       const date = req.query.currentDate as string;;  // Example date
-      const status = "Absent";  // Example status
+      const status = "A";  // Example status
   
       // Loop through each student and insert attendance records
       const insertPromises = students.map(async (student: any) => {
@@ -218,7 +218,109 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
     }
   });
   
-
+  attendanceSystemTeacherRouter.get("/get-attendance", async (req, res) => {
+    try {
+      // Parse the query parameters
+      const course_code = Number(req.query.course_code as string);
+      const academic_session_id = Number(req.query.academic_session_id as string);
+  
+      // Find the session IDs for the given course code and academic session
+      const sessions = await db
+        .selectFrom("Create_Class")
+        .select(["session_id", "class_startDate"])
+        .where("course_id", "=", course_code)
+        .where("academic_session_id", "=", academic_session_id)
+        .execute();
+  
+      // Extract session IDs and dates
+      const sessionIds = sessions.map(session => session.session_id);
+  
+      // Get student attendance for those sessions
+      const attendanceRecords = await db
+        .selectFrom("Student_Attendance")
+        .select(["student_id", "session_id", "date", "status"])
+        .where("session_id", "in", sessionIds)
+        .execute();
+  
+      // Organize the response by session_id and date
+      const attendanceMap: Record<number, { session_id: number, date: string, students: { id: number, status: string | null }[] }[]> = {};
+  
+      attendanceRecords.forEach(record => {
+        // Convert date to string in the format "YYYY-MM-DD"
+        const dateStr = typeof record.date === 'string'
+          ? record.date
+          : record.date.toISOString().split('T')[0]; 
+  
+        // Check if session_id exists in the attendanceMap
+        if (!attendanceMap[record.session_id]) {
+          attendanceMap[record.session_id] = [];
+        }
+  
+        // Check if the specific date exists for the current session_id
+        let dateEntry = attendanceMap[record.session_id].find(entry => entry.date === dateStr);
+  
+        // If no dateEntry for this session_id and date, create it
+        if (!dateEntry) {
+          dateEntry = {
+            session_id: record.session_id,
+            date: dateStr,
+            students: []
+          };
+          attendanceMap[record.session_id].push(dateEntry);
+        }
+  
+        // Add the student's attendance to the students array
+        dateEntry.students.push({
+          id: record.student_id,
+          status: record.status
+        });
+      });
+  
+      // Send success response with attendance data
+      res.status(200).send(attendanceMap);
+    } catch (error) {
+      // Handle errors and send failure response
+      res.status(400).json({ message: "Failed to retrieve attendance records", error });
+    }
+  });
+  
+  attendanceSystemTeacherRouter.patch("/update-attendance", async (req, res) => {
+    try {
+      // Extract parameters from the request body
+      const { student_id, session_id } = req.body;
+  
+      // Validate required fields
+      if (!student_id || !session_id) {
+        return res.status(400).send('Missing required fields: student_id and session_id');
+      }
+  
+      // Update the status in the Student_Attendance table
+      const result = await db
+        .updateTable("Student_Attendance")
+        .set({ status: "P" }) // Set the status to "P"
+        .where('student_id', '=', student_id)
+        .where('session_id', '=', session_id)
+        .executeTakeFirst();
+  
+      // Check if the update was successful by converting bigint to number
+      if (Number(result.numUpdatedRows) === 0) {
+        return res.status(404).send('Attendance record not found');
+      }
+  
+      // Send success response
+      res.status(200).send({
+        message: "Attendance status updated successfully."
+      });
+    } catch (error) {
+      console.error('Error updating attendance:', error);
+      res.status(500).send('Server error');
+    }
+  });
+  
+  
+  
+  
+  
 
   
   
