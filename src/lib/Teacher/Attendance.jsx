@@ -15,6 +15,7 @@ const Attendance = () => {
   const [warning, setWarning] = useState("");
   const [studentsForThisCourse, setStudentsForThisCourse] = useState([]);
   const [sessionCreated, setSessionCreated] = useState(false);
+  const [sessionIDforAPi, setSessionIDforAPi] = useState("");
   // const [sessionDetails, setSessionDetails] = useState({});
   // const [qrCodeData, setQrCodeData] = useState("");
   //const teacherName = 'Dr. Rudra Pratap Deb Nath';
@@ -43,7 +44,7 @@ const Attendance = () => {
       .then((res) => res.json())
       .then((data) => {
         setCourses(data.data);
-        // console.log(data.data);
+        console.log(data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -101,7 +102,7 @@ const Attendance = () => {
     // Format end time to "HH:MM:SS"
     const class_endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}:00`;
   
-    const data = {
+    const dataToPost = {
       course_id: course.course_id,
       course_code: formData.get('course_code'),
       semester: Number(formData.get('semester')),
@@ -113,6 +114,7 @@ const Attendance = () => {
       teacher_id: course.teacher_id,
       academic_session_id: course.academic_session_id
     };
+    console.log("posted data",dataToPost);
   
     try {
       // First API call
@@ -121,66 +123,58 @@ const Attendance = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(dataToPost),
       });
-  
-      if (!response.ok) {
+    
+      if (response.ok) {
+        const dataSessionID = await response.json();
+        const newSessionID = dataSessionID.data.session_id; // Get the session ID directly
+        console.log("Newly created session ID:", newSessionID);
+        setSessionIDforAPi(newSessionID); // Store it in state
+    
+        // Use the new session ID for the next API call
+        const studentsResponse = await fetch(`http://localhost:5000/api/attendance/teacher/students-by-acc-id?academic_session_id=${course.academic_session_id}`);
+        
+        if (!studentsResponse.ok) {
+          throw new Error('Failed to fetch students');
+        }
+    
+        const studentsData = await studentsResponse.json();
+        const updatedData = studentsData.map(student => ({
+          ...student,
+          academic_session_id: course.academic_session_id
+        }));
+        setStudentsForThisCourse(updatedData);
+        console.log('The academic session students:', updatedData);
+        
+        // Third API call using newSessionID
+        console.log("session id for api", newSessionID); // Now it will show the correct session ID
+        const attendanceResponse = await fetch(`http://localhost:5000/api/attendance/teacher/create-attendance?session_id=${newSessionID}&currentDate=2014-10-2`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedData),
+        });
+        
+        if (!attendanceResponse.ok) {
+          const attendanceData = await attendanceResponse.json();
+          if (attendanceData.error && attendanceData.error.code === 'ER_DUP_ENTRY') {
+            console.log('Duplicate entry detected');
+          } else {
+            throw new Error('Failed to post attendance');
+          }
+        }
+        console.log('Attendance posted successfully');
+        
+      } else {
         throw new Error('Failed to create session');
       }
-  
-      setSessionCreated(true);
-      console.log('Session created successfully');
-  
-      // Second API call
-      const studentsResponse = await fetch(`http://localhost:5000/api/attendance/teacher/students-by-acc-id?academic_session_id=${course.academic_session_id}`);
-      if (!studentsResponse.ok) {
-        throw new Error('Failed to fetch students');
-      }
-      if (response.ok) {
-                  console.log('Response status for 2:', response.status);
-                  // setHasPostedAttendance(true); // Mark as posted
-                } else {
-                  const responseData2 = await response.json();
-                  console.log('response data 2 :' , responseData2);
-                  if (responseData2.error && responseData2.error.code === 'ER_DUP_ENTRY') {
-                    console.log('Duplicate entry detected');
-                  } else {
-                    console.log('Failed to post attendance:', responseData2);
-                  }
-                }
-      const studentsData = await studentsResponse.json();
-      const updatedData = studentsData.map(student => ({
-        ...student,
-        academic_session_id: course.academic_session_id
-      }));
-      setStudentsForThisCourse(updatedData);
-      console.log('The academic session students:', updatedData);
-  
-      // Third API call
-      const sessionDetailsForAll = updatedData;
-      const attendanceResponse = await fetch('http://localhost:5000/api/attendance/teacher/create-attendance?session_id=50&currentDate=2014-10-2', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(sessionDetailsForAll),
-      });
-  
-      if (!attendanceResponse.ok) {
-        const attendanceData = await attendanceResponse.json();
-        if (attendanceData.error && attendanceData.error.code === 'ER_DUP_ENTRY') {
-          console.log('Duplicate entry detected');
-        } else {
-          throw new Error('Failed to post attendance');
-        }
-      }
-  
-      // setHasPostedAttendance(true); // Mark as posted
-      console.log('Attendance posted successfully');
-  
+      
     } catch (error) {
       console.error('Error:', error);
     }
+    
   };
   
 
@@ -355,7 +349,7 @@ const Attendance = () => {
                   <TableCell className="text-center">{course.semester}</TableCell>
                   <TableCell className="text-center">{course.session}</TableCell>
                   <TableCell className="text-center">
-                    <Link to={`/courseDetails/${course.id}`}>
+                    <Link to={`/courseDetails/${course.course_code}`}>
                       <Button>View details</Button>
                     </Link>
                   </TableCell>

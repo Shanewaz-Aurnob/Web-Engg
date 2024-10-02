@@ -12,10 +12,29 @@ import { FaArrowLeft } from 'react-icons/fa';
 import AttendanceSheet from "./AttendanceSheet";
 import { Button } from "@/components/ui/button";
 import { usePDF } from 'react-to-pdf';
+import { useEffect, useState } from "react";
 
 
 
 const CourseDetails = () => {
+
+
+    const [details, setDetails] = useState({});
+
+    useEffect(() => {
+  
+      // Fetch course details
+      fetch('http://localhost:5000/api/attendance/teacher/get-attendance?course_id=5&academic_session_id=20180801')
+        .then((res) => res.json())
+        .then((data) => {
+          setDetails(data);
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching teacher details:", error);
+        });
+  
+    }, []);
 
 
     const teacherName='Dr. Rudra Pratap Deb Nath'
@@ -36,10 +55,10 @@ const avgAttendace = (attanded) => {
 
 const { toPDF, targetRef } = usePDF({filename: 'attendance.pdf'});
 
-    const { id } = useParams();
-    const details = useLoaderData();
-    const Details = details.find(details => details.id === id)
-    // console.log( id);
+    // const { id } = useParams();
+    // const details = useLoaderData();
+    // const Details = details.find(details => details.id === id)
+    // // console.log( id);
     
     return (
         <div className="m-10 ">
@@ -49,9 +68,9 @@ const { toPDF, targetRef } = usePDF({filename: 'attendance.pdf'});
                 </button></Link>
             </div>
 
-            <h1 className="text-3xl mb-4 font-bold text-center">{Details.course_name} Details</h1>
-            <h3 className="text-xl mb-6 font-bold text-center">Total Held Classes: {Details.total_held_classes}</h3>
-            <div>
+            {/* <h1 className="text-3xl mb-4 font-bold text-center">{Details.course_name} Details</h1> */}
+            {/* <h3 className="text-xl mb-6 font-bold text-center">Total Held Classes: {Details.total_held_classes}</h3> */}
+            {/* <div>
                 <Button onClick={() => toPDF()}>Download PDF</Button>
             </div>
             <Table>
@@ -88,13 +107,13 @@ const { toPDF, targetRef } = usePDF({filename: 'attendance.pdf'});
                         </TableRow>
                     ))}
                 </TableBody>
-            </Table>
+            </Table> */}
 
 
             <div ref={targetRef} 
-            style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}
+            // style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}
             >
-                <AttendanceSheet courseCode={courseCode} teacherName={teacherName} />
+                <AttendanceSheet courseCode={courseCode} teacherName={teacherName} details={details}/>
             </div>
         </div>
     );

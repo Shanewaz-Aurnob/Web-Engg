@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-// import QRCode from "qrcode.react"; // Import QRCode component
-// import { Button } from "@/components/ui/button";
+import QRCode from "qrcode.react"; // Import QRCode component
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const CountdownDisplay = () => {
 
-  const [sessionTime, setSessionTime] = useState([]);
-  
+  const [sessionTime, setSessionTime] = useState(null);
+  const [qrCodeData, setQrCodeData] = useState(""); // State to store QR code data
+  const [countdown, setCountdown] = useState(0);
+  const [secretCode, setSecretCode] = useState('');
+
   useEffect(() => {
     const getCurrentDateTime = () => {
       const now = new Date();
@@ -30,17 +33,22 @@ const CountdownDisplay = () => {
       .then((res) => res.json())
       .then((data) => {
         setSessionTime(data[0]);
-        console.log(data);
+        console.log(data[0]);
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
-  
 
   useEffect(() => {
     if (!sessionTime) return;
-  
+    
+    // Set the QR code data based on sessionTime
+    setQrCodeData(`
+      Session Time: ${sessionTime.class_startTime} - ${sessionTime.class_endTime}, 
+      Attandance code : ${sessionTime.secret_code
+    }`);
+
     const calculateCountdown = () => {
       const now = new Date();
       const currentHours = now.getHours();
@@ -73,26 +81,53 @@ const CountdownDisplay = () => {
     return () => clearInterval(intervalId);
   }, [sessionTime]);
 
-
-
-  const [countdown, setCountdown] = useState(0);
-  // const [qrCodeData, setQrCodeData] = useState(""); // State to store QR code data
-
-  const [secretCode, setSecretCode] = useState('');
-
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    // setSubmittedCode(secretCode);
-    console.log(secretCode);
-  };
+    if (secretCode === sessionTime.secret_code) {
+        console.log(true);
+        
+        // Prepare the data to be sent to the API
+        const data = {
+           student_id:19701008,
+           session_id: sessionTime.session_id
+        };
+
+        // Send the update attendance request
+        fetch('http://localhost:5000/api/attendance/teacher/update-attendance', {
+            method: 'PATCH', // Use POST method
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data), // Convert data to JSON
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log('Attendance updated successfully:', data);
+            // Optionally show a success message to the user
+        })
+        .catch((error) => {
+            console.error('Error updating attendance:', error);
+            // Optionally show an error message to the user
+        });
+    } else {
+        console.log(false);
+        // Optionally show a message indicating that the code was incorrect
+    }
+};
+
 
   const handleInputChange = (e) => {
     setSecretCode(e.target.value);
   };
+
   return (
     <div>
-      {sessionTime  ? (
+      {sessionTime ? (
         <div className="p-10">
           <div className="flex flex-row-reverse justify-center gap-28 ">
             <div>
@@ -103,9 +138,7 @@ const CountdownDisplay = () => {
               <div className="mb-4 text-3xl font-bold">
                 Would you like to provide attendance <br/> for the ongoing session?
               </div>
-              {/* <p className="text-xl font-semibold">Course Name : {sessionTime.courseName}</p>
-              <p className="text-xl font-semibold">Course Code : {sessionTime.courseCode}</p>
-              <p className="text-xl font-semibold">Date : {sessionTime.date}</p> */}
+              <p className="text-xl font-semibold">Date : {sessionTime.class_startDate}</p>
               <p className="text-xl font-semibold">Starting Time: {sessionTime.class_startTime}</p>
               <p className="text-xl font-semibold">Time left: {countdown}</p>
               <p className="text-xl font-semibold">End Time: {sessionTime.class_endTime}</p>
@@ -122,14 +155,14 @@ const CountdownDisplay = () => {
                         className="mr-2"
                       />
                       <button type="submit" className="bg-[#0C4A6E] text-white py-2 px-4 rounded-md font-semibold">
-                    Submit Attendance
-                  </button>
+                        Submit Attendance
+                      </button>
                     </div>
                   </div>
                 </form>
             </div>
             <div className="flex justify-center items-center">
-            {/* <QRCode className="w-64" size={240} fgColor={'#66798F'} value={qrCodeData} /> Render the QR code */}
+              <QRCode className="w-64" size={240} fgColor={'#66798F'} value={qrCodeData} /> {/* Render the QR code */}
             </div>
           </div>
           <div>
