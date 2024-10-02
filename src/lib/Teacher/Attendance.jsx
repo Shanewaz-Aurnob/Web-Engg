@@ -13,32 +13,37 @@ const Attendance = () => {
   const [courses, setCourses] = useState([]);
   const [sessionActive, setSessionActive] = useState(false);
   const [warning, setWarning] = useState("");
-  const [sessionDetails, setSessionDetails] = useState({});
-  const [qrCodeData, setQrCodeData] = useState("");
+  const [studentsForThisCourse, setStudentsForThisCourse] = useState([]);
+  const [sessionCreated, setSessionCreated] = useState(false);
+  // const [sessionDetails, setSessionDetails] = useState({});
+  // const [qrCodeData, setQrCodeData] = useState("");
   //const teacherName = 'Dr. Rudra Pratap Deb Nath';
   const courseCode = 'CSE-413';
+
+  const [teacherData, setTeacherData] = useState({});
 
   useEffect(() => {
 
     // Fetch teacher details
-    fetch('http://localhost:5000/api/teacher')
+    fetch('http://localhost:5000/api/teacher/5008')
       .then((res) => res.json())
       .then((data) => {
         setTeacherData({
-          name: data.name || "Unknown Name", // Ensure the data has a name field
-          designation: data.designation || "Unknown Designation" // Ensure the data has a designation field
+          name: `${data.personal_info.first_name} ${data.personal_info.last_name}`,
+          designation: data.personal_info.designation || "Unknown Designation" 
         });
+        // console.log(data);
       })
       .catch((error) => {
         console.error("Error fetching teacher details:", error);
       });
 
 
-    fetch('http://localhost:5000/api/attendance/teacher')
+    fetch('http://localhost:5000/api/attendance/teacher?page=2')
       .then((res) => res.json())
       .then((data) => {
         setCourses(data.data);
-        console.log(data.data);
+        // console.log(data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -55,116 +60,131 @@ const Attendance = () => {
       minute: "2-digit",
     });
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-
-    //     if (sessionActive) {
-    //       setWarning("You can't create session more than once at a time");
-    //       return;
-    //     }
-    //     setWarning('');
-
-    //     const formData = new FormData(e.target);
-    //     const data = {
-    //         course_id: course.course_id,
-    //         course_code: formData.get('course_code'),
-    //         semester: Number(formData.get('semester')),
-    //         class_startDate: formData.get('date'),
-    //         class_startTime: `${formData.get('time')}:00`, // Append ":00" to the time
-    //         duration: Number(formData.get('minutes')),
-    //         session: formData.get('session'), // Ensure session is included in the payload
-    //         // class_endTime: ,
-    //         secret_code: "-",
-    //     };
-
-    //     console.log('Data to be sent:', data);
-
-    //     try {
-    //         const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(data),
-    //         });
-
-    //         console.log('Response status:', response.status);
-    //         const responseData = await response.json();
-    //         console.log('Response data:', responseData);
-
-    //         if (response.ok) {
-    //             console.log('Session created successfully');
-    //         } else {
-    //             console.error('Error creating session:', responseData);
-    //         }
-    //     } catch (error) {
-    //         console.error('Network error:', error);
-    //     }
-    // };
-
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      if (sessionActive) {
-          setWarning("You can't create session more than once at a time");
-          return;
+    const generateSecretCode = () => { //for security
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      const charactersLength = characters.length;
+      for (let i = 0; i < 8; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
       }
-      setWarning('');
+      return result;
+    };
   
-      const formData = new FormData(e.target);
-      const startTime = formData.get('time');
-      const duration = Number(formData.get('minutes'));
+
+
+
+
+  // 2.academic_session_id er jnno fetch api
+  const handleSubmit = async (e) => {
+    e.preventDefault();
   
-      // Split the start time into hours and minutes
-      const [startHour, startMinute] = startTime.split(':').map(Number);
+    if (sessionActive) {
+      setWarning("You can't create session more than once at a time");
+      return;
+    }
+    setWarning('');
   
-      // Calculate the total minutes
-      let totalMinutes = startHour * 60 + startMinute + duration;
+    const formData = new FormData(e.target);
+    const startTime = formData.get('time');
+    const duration = Number(formData.get('minutes'));
   
-      // Calculate the end hours and minutes
-      const endHour = Math.floor(totalMinutes / 60);
-      const endMinute = totalMinutes % 60;
+    // Split the start time into hours and minutes
+    const [startHour, startMinute] = startTime.split(':').map(Number);
   
-      // Format end time to "HH:MM:SS"
-      const class_endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}:00`;
+    // Calculate the total minutes
+    let totalMinutes = startHour * 60 + startMinute + duration;
   
-      const data = {
-          course_id: course.course_id,
-          course_code: formData.get('course_code'),
-          semester: Number(formData.get('semester')),
-          class_startDate: formData.get('date'),
-          class_startTime: `${startTime}:00`, // Append ":00" to the start time
-          duration: duration,
-          session: formData.get('session'), // Ensure session is included in the payload
-          class_endTime: class_endTime,
-          secret_code: "-",
-          teacher_id: course.teacher_id,
-      };
+    // Calculate the end hours and minutes
+    const endHour = Math.floor(totalMinutes / 60);
+    const endMinute = totalMinutes % 60;
   
-      console.log('Data to be sent:', data);
+    // Format end time to "HH:MM:SS"
+    const class_endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}:00`;
   
-      try {
-          const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data),
-          });
+    const data = {
+      course_id: course.course_id,
+      course_code: formData.get('course_code'),
+      semester: Number(formData.get('semester')),
+      class_startDate: formData.get('date'),
+      class_startTime: `${startTime}:00`,
+      duration: duration,
+      class_endTime: class_endTime,
+      secret_code: generateSecretCode(),
+      teacher_id: course.teacher_id,
+      academic_session_id: course.academic_session_id
+    };
   
-          console.log('Response status:', response.status);
-          const responseData = await response.json();
-          console.log('Response data:', responseData);
+    try {
+      // First API call
+      const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
   
-          if (response.ok) {
-              console.log('Session created successfully');
-          } else {
-              console.error('Error creating session:', responseData);
-          }
-      } catch (error) {
-          console.error('Network error:', error);
+      if (!response.ok) {
+        throw new Error('Failed to create session');
       }
+  
+      setSessionCreated(true);
+      console.log('Session created successfully');
+  
+      // Second API call
+      const studentsResponse = await fetch(`http://localhost:5000/api/attendance/teacher/students-by-acc-id?academic_session_id=${course.academic_session_id}`);
+      if (!studentsResponse.ok) {
+        throw new Error('Failed to fetch students');
+      }
+      if (response.ok) {
+                  console.log('Response status for 2:', response.status);
+                  // setHasPostedAttendance(true); // Mark as posted
+                } else {
+                  const responseData2 = await response.json();
+                  console.log('response data 2 :' , responseData2);
+                  if (responseData2.error && responseData2.error.code === 'ER_DUP_ENTRY') {
+                    console.log('Duplicate entry detected');
+                  } else {
+                    console.log('Failed to post attendance:', responseData2);
+                  }
+                }
+      const studentsData = await studentsResponse.json();
+      const updatedData = studentsData.map(student => ({
+        ...student,
+        academic_session_id: course.academic_session_id
+      }));
+      setStudentsForThisCourse(updatedData);
+      console.log('The academic session students:', updatedData);
+  
+      // Third API call
+      const sessionDetailsForAll = updatedData;
+      const attendanceResponse = await fetch('http://localhost:5000/api/attendance/teacher/create-attendance?session_id=50&currentDate=2014-10-2', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sessionDetailsForAll),
+      });
+  
+      if (!attendanceResponse.ok) {
+        const attendanceData = await attendanceResponse.json();
+        if (attendanceData.error && attendanceData.error.code === 'ER_DUP_ENTRY') {
+          console.log('Duplicate entry detected');
+        } else {
+          throw new Error('Failed to post attendance');
+        }
+      }
+  
+      // setHasPostedAttendance(true); // Mark as posted
+      console.log('Attendance posted successfully');
+  
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
+  
+
+
   
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -249,73 +269,6 @@ const Attendance = () => {
 
 
 
-  const [countdown, setCountdown] = useState(0);
-
-  // const startCountdown = (totalMinutes) => {
-  //   setSessionActive(true);
-  //   const totalSeconds = totalMinutes * 60;
-  //   const endTime = Date.now() + totalSeconds * 1000;
-  //   localStorage.setItem('countdownEndTime', endTime);
-  //   setCountdown(totalSeconds);
-
-  //   const interval = setInterval(() => {
-  //     setCountdown((prevCountdown) => {
-  //       if (prevCountdown > 0) {
-  //         return prevCountdown - 1;
-  //       } else {
-  //         clearInterval(interval);
-  //         localStorage.removeItem('countdownEndTime');
-  //         setSessionActive(false);
-  //         return 0;
-  //       }
-  //     });
-  //   }, 1000);
-
-  //   return interval;
-  // };
-
-  // useEffect(() => {
-  //   const endTime = localStorage.getItem('countdownEndTime');
-  //   const savedSessionDetails = localStorage.getItem('sessionDetails');
-
-  //   if (savedSessionDetails) {
-  //     setSessionDetails(JSON.parse(savedSessionDetails));
-  //   }
-
-  //   if (endTime) {
-  //     const remainingTime = Math.floor((endTime - Date.now()) / 1000);
-  //     if (remainingTime > 0) {
-  //       setCountdown(remainingTime);
-  //       setSessionActive(true);
-  //       const interval = setInterval(() => {
-  //         setCountdown((prevCountdown) => {
-  //           if (prevCountdown > 0) {
-  //             return prevCountdown - 1;
-  //           } else {
-  //             clearInterval(interval);
-  //             localStorage.removeItem('countdownEndTime');
-  //             localStorage.removeItem('sessionDetails');
-  //             setSessionActive(false);
-  //             return 0;
-  //           }
-  //         });
-  //       }, 1000);
-  //       return () => clearInterval(interval);
-  //     } else {
-  //       localStorage.removeItem('countdownEndTime');
-  //       localStorage.removeItem('sessionDetails');
-  //     }
-  //   }
-  // }, []);
-
-  // const formatTime = (seconds) => {
-  //   const hours = Math.floor(seconds / 3600);
-  //   const minutes = Math.floor((seconds % 3600) / 60);
-  //   const remainingSeconds = seconds % 60;
-
-  //   return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  // };
-
   return (
     <div>
       <div className="flex justify-center gap-20">
@@ -336,7 +289,7 @@ const Attendance = () => {
         <hr className="border-2" style={{ borderColor: '#CCCCCC' }} />
       </div>
 
-      {countdown > 0 && (
+      {courses > 0 && (
         <div className="p-10">
           <div className="flex flex-row-reverse justify-center gap-28 ">
             <div>
@@ -351,7 +304,7 @@ const Attendance = () => {
               <p className="text-xl font-semibold">Course Code : {sessionDetails.courseCode}</p>
               <p className="text-xl font-semibold">Date : {sessionDetails.date}</p>
               <p className="text-xl font-semibold">Starting Time: {sessionDetails.time}</p>
-              <p className="text-xl font-bold">End Time: {new Date(Date.now() + countdown * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p>
+              {/* <p className="text-xl font-bold">End Time: {new Date(Date.now() + countdown * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p> */}
               {/* <p className="text-xl font-bold">Time left: {formatTime(countdown)}</p> */}
             </div>
             <div className="flex justify-center items-center">
@@ -379,9 +332,9 @@ const Attendance = () => {
                 <TableHead className="p-3 text-center text-lg text-black">S.No</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Course Name</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Course Code</TableHead>
-                 <TableHead className="p-3 text-center text-lg text-black">Program</TableHead>
-                 <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>
-                 <TableHead className="p-3 text-center text-lg text-black">Which Semester</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Program</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Which Semester</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Type</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Semester</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>
