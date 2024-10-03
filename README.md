@@ -38,13 +38,13 @@ One team member from every Level-0 team was part of this team to provide updates
 - **Shanewaz Aurnob**: Database
 
 ## Deployment
-- **GitHub Repository**: [GitHub Link](https://github.com/username/repo)
-- **Deployed Application**: [Deployment Link](https://your-deployment-link.com)
+- **GitHub Repository**: [GitHub Link](https://github.com/ShanewazAurnob/Web-Engg)
+- **Deployed Application**: [Deployment Link](http://bike-csecu.com:3040/)
 
 ## Installation and Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/repo.git
+   git clone https://github.com/ShanewazAurnob/Web-Engg
    cd repo
    ```
 2. Install dependencies:
@@ -52,11 +52,13 @@ One team member from every Level-0 team was part of this team to provide updates
    npm install
    ```
 3. Set up the database:
-   - Import the database schema from `schema.sql` using SQL Workbench.
-   - Configure your database connection in the `.env` file.
+   ```bash
+   cd ./CentralBackend
+   npm run dev
+   ```
 4. Run the server:
    ```bash
-   npm start
+   npm run dev
    ```
 5. Open the application in your browser at `http://localhost:3000`.
 
