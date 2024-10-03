@@ -381,7 +381,7 @@ const formatDate = (dateString) => {
                 <p className="text-xl font-semibold">Starting Time: {sessionTime.class_startTime}</p>
                 <p className="text-xl font-semibold">Time left: {countdown}</p>
                 <p className="text-xl font-semibold">End Time: {sessionTime.class_endTime}</p>
-                <p className="text-xl font-semibold">End Time: {sessionTime.duration} minutes</p>
+                <p className="text-xl font-semibold">Duration: {sessionTime.duration} minutes</p>
               </div>
             <div className="flex justify-center items-center">
               <QRCode className="w-64" size={240} fgColor={'#66798F'} value={qrCodeData} />
@@ -409,7 +409,7 @@ const formatDate = (dateString) => {
                 <TableHead className="p-3 text-center text-lg text-black">Course Name</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Course Code</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Program</TableHead>
-                <TableHead className="p-3 text-center text-lg text-black">Session</TableHead>
+                <TableHead className="p-3 text-center text-lg text-black">Credit</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Which Semester</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Type</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Semester</TableHead>
@@ -425,7 +425,7 @@ const formatDate = (dateString) => {
                   <TableCell className="text-center">{course.course_title}</TableCell>
                   <TableCell className="text-center">{course.course_code}</TableCell>
                   <TableCell className="text-center">{course.program_abbr}</TableCell>
-                  <TableCell className="text-center">{course.session}</TableCell>
+                  <TableCell className="text-center">{course.credit}</TableCell>
                   <TableCell className="text-center">{course.semester}</TableCell>
                   <TableCell className="text-center">{course.course_type}</TableCell>
                   <TableCell className="text-center">{course.semester}</TableCell>

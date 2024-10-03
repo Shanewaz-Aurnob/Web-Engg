@@ -136,7 +136,7 @@ const formatDate = (dateString) => {
   return (
     <div>
       {sessionTime ? (
-        <div className="p-10">
+        <div className="pt-10">
           <div className="flex flex-row-reverse justify-center gap-28 ">
             <div>
               <div className="mb-4 text-3xl font-bold">
@@ -153,7 +153,7 @@ const formatDate = (dateString) => {
               <form onSubmit={handleSubmit} className="">
                   <div className="mt-2">
                     <label htmlFor="attendance">Code for attendance</label>
-                    <div className="mt-1 flex">
+                    <div className="mt-1 flex flex-row justify-evenly w-full">
                       <Input
                         type="text"
                         id="secret_code"
@@ -162,7 +162,7 @@ const formatDate = (dateString) => {
                         onChange={handleInputChange}
                         className="mr-2"
                       />
-                      <button type="submit" className="bg-[#0C4A6E] text-white py-2 px-4 rounded-md font-semibold">
+                      <button type="submit" className="bg-[#0C4A6E] text-white py-2 px-5 w-1/2 rounded-md font-semibold">
                         Submit Attendance
                       </button>
                     </div>
