@@ -143,6 +143,7 @@ const Attendance = () => {
           ...student,
           academic_session_id: course.academic_session_id
         }));
+        console.log("updated data",updatedData)
         setStudentsForThisCourse(updatedData);
         console.log('The academic session students:', updatedData);
         

@@ -11,15 +11,19 @@ const AttendanceSheet = ({  teacherName, details }) => {
       const sessionData = [];
       const students = {};
 
+
       // Aggregate all sessions from the details object
       Object.values(details).forEach(sessionsArray => {
         sessionsArray.forEach(session => {
           sessionData.push(session);
+          console.log(session)
           session.students.forEach(student => {
             if (!students[student.id]) {
               students[student.id] = { id: student.id, attendance: {} };
+              console.log(students[student.id])
             }
             students[student.id].attendance[session.date] = student.status;
+            console.log(student)
           });
         });
       });
@@ -32,7 +36,9 @@ const AttendanceSheet = ({  teacherName, details }) => {
   }, [details]);
 
   // Extract unique dates from session data
+  // console.log(session.date)
   const uniqueDates = [...new Set(sessions.map(session => session.date))];
+  // console.log(uniqueDates)
 
   return (
     <div className="p-4 flex flex-col justify-center items-center">
@@ -47,7 +53,7 @@ const AttendanceSheet = ({  teacherName, details }) => {
           <tr>
             <th className="py-2 border">ID</th>
             {uniqueDates.map((date, index) => (
-              <th key={index} className="py-2 border">{date}</th>
+              <th key={index} className="py-2 border ">{date}</th>
             ))}
             <th className="py-2 border">Total Present</th>
             <th className="py-2 border">Total Percentage</th>
@@ -57,7 +63,6 @@ const AttendanceSheet = ({  teacherName, details }) => {
           {studentData.map(student => {
             const totalPresent = uniqueDates.filter(date => student.attendance[date] === 'P').length;
             const totalPercentage = ((totalPresent / uniqueDates.length) * 100).toFixed(2);
-
             return (
               <tr key={student.id}>
                 <td className="border px-4 py-2">{student.id}</td>
