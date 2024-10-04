@@ -1,4 +1,4 @@
-# Smart Attendance System for CSE CU (University of Chittagong)
+# Smart Attendance System for CU (University of Chittagong)
 
 ## Introduction
 This project is a smart attendance system developed for the Department of Computer Science and Engineering (CSE) at the University of Chittagong. It was part of a large-scale project involving multiple teams, and our focus was specifically on creating the attendance system.
