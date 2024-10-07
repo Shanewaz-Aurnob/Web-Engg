@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { NavLink, Outlet, useOutletContext } from 'react-router-dom';
+import { NavLink, Outlet} from 'react-router-dom';
 
 const Dashboard = () => {
 
@@ -15,7 +15,7 @@ const Dashboard = () => {
                 <ul className="menu space-y-2">
                     <li>
                         <NavLink 
-                            to='/attendance'  
+                            to='/dashboard/attendance'  
                             className="block px-4 py-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-200 focus:bg-gray-200"
                         >
                             TeacherPage
@@ -23,7 +23,7 @@ const Dashboard = () => {
                     </li>
                     <li>
                         <NavLink 
-                            to="/studentPage"  
+                            to="/dashboard/studentPage"  
                             className="block px-4 py-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-200 focus:bg-gray-200"
                         >
                             StudentPage
@@ -31,7 +31,7 @@ const Dashboard = () => {
                     </li> 
                     <li>
                         <NavLink 
-                            to='/staffPage'  
+                            to='/dashboard/staffPage'  
                             className="block px-4 py-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-gray-200 focus:bg-gray-200"
                         >
                             StaffPage

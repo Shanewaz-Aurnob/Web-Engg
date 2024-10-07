@@ -12,6 +12,7 @@ import Attendance from './lib/Teacher/Attendance';
 import CourseDetails from './lib/Teacher/CourseDetails';
 import StaffPage from './lib/Staff/StaffPage';
 import SemesterDetails from './lib/Staff/SemesterDetails';
+import Login from './lib/Login/Login';
 
 const router = createBrowserRouter([
   {
@@ -19,32 +20,39 @@ const router = createBrowserRouter([
     element: <App></App>,
     children: [
       {
-        path: "/",
-        element: <Dashboard></Dashboard>
-      },
+        path:'/',
+        element:<Login></Login>
+      } 
+    ]
+    
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard></Dashboard>,
+    children:[
       {
-        path:"/attendance",
+        path:"/dashboard/attendance",
         element:<Attendance></Attendance>
       },
       {
-        path:"/studentPage",
+        path:"/dashboard/studentPage",
         element: <StudentPage></StudentPage>
       },
       {
-        path: '/courseDetails/:id',
+        path: '/dashboard/courseDetails/:id',
         element:<CourseDetails></CourseDetails>,
       },
       {
-        path:'/staffPage',
+        path:'/dashboard/staffPage',
         element:<StaffPage></StaffPage>
       },
       {
-        path:'/semDetails/:id',
+        path:'/dashboard/semDetails/:id',
         element:<SemesterDetails></SemesterDetails>,
         loader: () =>fetch('/data.json')
       },
     ]
-  },
+  }
 ]);
 
 

@@ -1,10 +1,11 @@
 
-import Dashboard from './Deshaboard/Dashboard';
+// import Dashboard from './Deshaboard/Dashboard';
+import Login from './Login/Login';
 
 const App = () => {
     return (
         <div className='bg-white'>
-            <Dashboard /> 
+            <Login></Login>
             {/* <Outlet /> */}
         </div>
     );

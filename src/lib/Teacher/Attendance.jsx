@@ -432,7 +432,7 @@ const formatDate = (dateString) => {
                   <TableCell className="text-center">{course.semester}</TableCell>
                   <TableCell className="text-center">{course.session}</TableCell>
                   <TableCell className="text-center">
-                    <Link to={`/courseDetails/${course.course_code}`} state={{myObj: course}}>
+                    <Link to={`/dashboard/courseDetails/${course.course_code}`} state={{myObj: course}}>
                       <Button>View details</Button>
                     </Link>
                   </TableCell>

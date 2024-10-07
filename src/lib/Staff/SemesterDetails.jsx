@@ -27,7 +27,7 @@ const SemesterDetails = () => {
     return (
         <div className="m-10">
             <div className="mb-4">
-                <Link to="/staffPage">
+                <Link to="/dashboard/staffPage">
                     <button className="flex items-center text-[#0C496D]">
                         <FaArrowLeft className="mr-1" /> Back
                     </button>

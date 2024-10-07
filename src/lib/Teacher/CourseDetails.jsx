@@ -81,7 +81,7 @@ console.log(state);
     return (
         <div className="m-10">
             <div className="mb-4">
-                <Link to="/attendance"><button className="flex items-center text-[#0C496D]">
+                <Link to="/dashboard/attendance"><button className="flex items-center text-[#0C496D]">
                     <FaArrowLeft className="mr-1" /> Back
                 </button></Link>
             </div>
