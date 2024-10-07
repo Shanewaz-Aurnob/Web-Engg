@@ -18,7 +18,7 @@ const CourseDetails = () => {
     // const [courses, setCourses] = useState([]);
 
     const {state} = useLocation();
-console.log(state);
+    console.log("course details",state);
 
   useEffect(() => {
     console.log('Location state:', location.state);

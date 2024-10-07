@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
-import { NavLink, Outlet} from 'react-router-dom';
+import { Link, NavLink, Outlet} from 'react-router-dom';
+import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
 
@@ -10,9 +11,9 @@ const Dashboard = () => {
         setOngoingSession(sessionDetails);
       };
     return (
-        <div className="lg:flex ">
+        <div className="lg:flex " >
             <div className="lg:w-56 bg-slate-400 p-10 ">
-                <ul className="menu space-y-2">
+                <ul className="menu space-y-2" style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}>
                     <li>
                         <NavLink 
                             to='/dashboard/attendance'  
@@ -37,8 +38,11 @@ const Dashboard = () => {
                             StaffPage
                         </NavLink>
                     </li> 
-                    
                 </ul>
+
+                <Link to='/ ' >
+                      <Button>Logout</Button>
+                    </Link>
             </div>
             <div className="lg:flex-1">
                 <Outlet context={{ ongoingSession, handleSessionCreate }}/>

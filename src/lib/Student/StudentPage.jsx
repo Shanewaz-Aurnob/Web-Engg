@@ -15,7 +15,7 @@ const StudentPage = () => {
   const [studentData, setStudentData] = useState([]);
 
   useEffect(() => {
-    // Fetch teacher details
+    // Fetch  details
     fetch(`http://localhost:5000/api/attendance/teacher/courses?student_id=${studentId}`)
       .then((res) => res.json())
       .then((data) => {

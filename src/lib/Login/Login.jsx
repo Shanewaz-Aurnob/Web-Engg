@@ -1,23 +1,34 @@
 import { useState } from 'react';
-// import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Button } from "@/components/ui/button"
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const Login = () => {
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('teacher'); // Default role set to 'teacher'
+    const navigate = useNavigate();
 
     const handleRoleChange = (event) => {
         setRole(event.target.value);
+        // console.log('Selected Role:', event.target.value); // Debugging
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const formData = [id, password, role];
+        const formData = { id, password, role };
         console.log(formData);
-        // Handle form submission logic here
+
+        // Navigation logic
+        if (role === 'teacher' && id === '5008') {
+            navigate('/dashboard/attendance');
+        } else if (role === 'student' && id === '19701008' || id == '19701015' || id === '19701002' || id === '197010037' || id === '19701024' ) {
+            navigate('/dashboard/studentPage');
+        } else if (role === 'staff') {
+            navigate('/dashboard/staffPage');
+        } else {
+            console.log('Invalid credentials or role');
+        }
     };
 
     return (
@@ -49,23 +60,45 @@ const Login = () => {
                     />
                 </div>
                 <div className="mb-4">
-                    <RadioGroup value={role} onChange={handleRoleChange}>
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="teacher" id="teacher" />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+                    <div className="flex items-center space-x-4">
+                        <div className="flex items-center">
+                            <input 
+                                type="radio" 
+                                value="teacher" 
+                                id="teacher" 
+                                checked={role === 'teacher'} 
+                                onChange={handleRoleChange} 
+                                className="mr-2" 
+                            />
                             <label htmlFor="teacher">Teacher</label>
                         </div>
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="student" id="student" />
+                        <div className="flex items-center">
+                            <input 
+                                type="radio" 
+                                value="student" 
+                                id="student" 
+                                checked={role === 'student'} 
+                                onChange={handleRoleChange} 
+                                className="mr-2" 
+                            />
                             <label htmlFor="student">Student</label>
                         </div>
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="staff" id="staff" />
+                        <div className="flex items-center">
+                            <input 
+                                type="radio" 
+                                value="staff" 
+                                id="staff" 
+                                checked={role === 'staff'} 
+                                onChange={handleRoleChange} 
+                                className="mr-2" 
+                            />
                             <label htmlFor="staff">Staff</label>
                         </div>
-                    </RadioGroup>
+                    </div>
                 </div>
                 <div className="text-center">
-                    <Button type="submit" >Login</Button>
+                    <Button type="submit">Login</Button>
                 </div>
             </form>
         </div>

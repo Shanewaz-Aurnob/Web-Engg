@@ -14,12 +14,14 @@ const Attendance = () => {
   const [courses, setCourses] = useState([]);
   const [sessionActive, setSessionActive] = useState(false);
   const [warning, setWarning] = useState("");
-  const [studentsForThisCourse, setStudentsForThisCourse] = useState([]);
-  const [sessionIDforAPi, setSessionIDforAPi] = useState("");
+
 
   const courseCode = 'CSE-413';
 
   const [teacherData, setTeacherData] = useState({});
+
+  // console.log("passed id:", id);
+  
 
   useEffect(() => {
 
@@ -42,7 +44,7 @@ const Attendance = () => {
       .then((res) => res.json())
       .then((data) => {
         setCourses(data.data);
-        console.log(data.data);
+        // console.log(data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -128,7 +130,7 @@ const Attendance = () => {
         const dataSessionID = await response.json();
         const newSessionID = dataSessionID.data.session_id; // Get the session ID directly
         console.log("Newly created session ID:", newSessionID);
-        setSessionIDforAPi(newSessionID); // Store it in state
+        // setSessionIDforAPi(newSessionID); // Store it in state
         setSessionActive(true);
     
         // Use the new session ID for the next API call
@@ -144,7 +146,7 @@ const Attendance = () => {
           academic_session_id: course.academic_session_id
         }));
         console.log("updated data",updatedData)
-        setStudentsForThisCourse(updatedData);
+        // setStudentsForThisCourse(updatedData);
         console.log('The academic session students:', updatedData);
         
         // Third API call using newSessionID
@@ -291,7 +293,7 @@ useEffect(() => {
     .then((res) => res.json())
     .then((data) => {
       setSessionTime(data[0]);
-      console.log(data[0]);
+      // console.log(data[0]);
     })
     .catch((error) => {
       console.error(error);
