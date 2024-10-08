@@ -39,7 +39,7 @@ const StudentPage = () => {
   }, [id, userRole]);
 
 
-  if (userRole == "student"){
+  if (userRole == "student" ){
     return (
     <div>
       {/* Students minimum info */}
