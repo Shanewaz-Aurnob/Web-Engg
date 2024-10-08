@@ -1,18 +1,21 @@
-
 import { useState } from 'react';
-import { Link, NavLink, Outlet} from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
-
     const [ongoingSession, setOngoingSession] = useState(null);
 
     const handleSessionCreate = (sessionDetails) => {
         setOngoingSession(sessionDetails);
-      };
+    };
+
+    const handleLogout = () => {
+        localStorage.clear(); // Clear local storage
+    };
+
     return (
-        <div className="lg:flex " >
-            <div className="lg:w-56 bg-slate-400 p-10 ">
+        <div className="lg:flex">
+            <div className="lg:w-56 bg-slate-400 p-10">
                 <ul className="menu space-y-2" style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}>
                     <li>
                         <NavLink 
@@ -29,7 +32,7 @@ const Dashboard = () => {
                         >
                             StudentPage
                         </NavLink>
-                    </li> 
+                    </li>
                     <li>
                         <NavLink 
                             to='/dashboard/staffPage'  
@@ -37,15 +40,15 @@ const Dashboard = () => {
                         >
                             StaffPage
                         </NavLink>
-                    </li> 
+                    </li>
                 </ul>
 
-                <Link to='/ ' >
-                      <Button>Logout</Button>
-                    </Link>
+                <Link to='/'>
+                    <Button onClick={handleLogout}>Logout</Button>
+                </Link>
             </div>
             <div className="lg:flex-1">
-                <Outlet context={{ ongoingSession, handleSessionCreate }}/>
+                <Outlet context={{ ongoingSession, handleSessionCreate }} />
             </div>
         </div>
     );

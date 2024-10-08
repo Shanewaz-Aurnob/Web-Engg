@@ -35,7 +35,7 @@ const router = createBrowserRouter([
         element:<Attendance></Attendance>
       },
       {
-        path:"/dashboard/studentPage",
+        path:"/dashboard/studentPage/:id",
         element: <StudentPage></StudentPage>
       },
       {

@@ -20,10 +20,15 @@ const Attendance = () => {
 
   const [teacherData, setTeacherData] = useState({});
 
+  const userRole = localStorage.getItem('userRole');
+
+
   // console.log("passed id:", id);
   
 
   useEffect(() => {
+
+    if (userRole !== "teacher") return;
 
     // Fetch teacher details
     fetch('http://localhost:5000/api/teacher/5008')
@@ -49,7 +54,7 @@ const Attendance = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [userRole]);
 
 
  
@@ -271,6 +276,7 @@ const [sessionTime, setSessionTime] = useState(null);
 
 
 useEffect(() => {
+  if (userRole !== "teacher") return;
   const getCurrentDateTime = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -298,7 +304,7 @@ useEffect(() => {
     .catch((error) => {
       console.error(error);
     });
-}, []);
+}, [userRole]);
 
 useEffect(() => {
   if (!sessionTime) return;
@@ -352,7 +358,9 @@ const formatDate = (dateString) => {
 
 
 
+if (userRole == "teacher"){
   return (
+    
     <div>
       <div className="flex justify-center gap-20">
         <div className="p-10">
@@ -465,6 +473,17 @@ const formatDate = (dateString) => {
       </div>
     </div>
   );
+} else {
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <div>
+          Unauthorised Access...
+      </div>
+    </div>
+  )
+}
+
+  
 };
 
 export default Attendance;

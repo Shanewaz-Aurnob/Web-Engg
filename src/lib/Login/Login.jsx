@@ -20,11 +20,14 @@ const Login = () => {
         console.log(formData);
 
         // Navigation logic
-        if (role === 'teacher' && id === '5008') {
+        if (role === 'teacher' && id === '5008' && password == 'teacher@08' ) {
+            localStorage.setItem('userRole', role); // Save role to localStorage
             navigate('/dashboard/attendance');
-        } else if (role === 'student' && id === '19701008' || id == '19701015' || id === '19701002' || id === '197010037' || id === '19701024' ) {
-            navigate('/dashboard/studentPage');
-        } else if (role === 'staff') {
+        } else if (role === 'student' && (id === '19701008' || id === '19701015' || id === '19701002' || id === '19701037' || id === '19701024') && password == 'student@05')  {
+            localStorage.setItem('userRole', role); // Save role to localStorage
+            navigate(`/dashboard/studentPage/${id}`);
+        } else if (role === 'staff' && password == 'staff@01') {
+            localStorage.setItem('userRole', role); // Save role to localStorage
             navigate('/dashboard/staffPage');
         } else {
             console.log('Invalid credentials or role');
@@ -32,8 +35,11 @@ const Login = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto mt-10 p-6 shadow-lg rounded-lg bg-white">
-            <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <div className='h-screen flex justify-center items-center'>
+            <div className=' w-[28rem]  shadow-gray-400 lg:shadow-[10px_10px_20px_0_rgba(0,0,0,0.5)] shadow-[10px_10px_10    px_0_rgba(0,0,0,0.9)]'>
+            <div className=" mt-10 p-6 shadow-lg rounded-lg bg-white ">
+            <h1 className="text-4xl font-bold mb-2 text-center">Attendance System</h1>
+            <h3 className="text-2xl font-semibold mb-6 text-center">University of Chittagong</h3>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="id" className="block text-sm font-medium text-gray-700">ID</label>
@@ -102,6 +108,10 @@ const Login = () => {
                 </div>
             </form>
         </div>
+        </div>
+        </div>
+        
+        
     );
 };
 

@@ -6,8 +6,12 @@ import { Link } from "react-router-dom";
 
 const StaffPage = () => {
     const [sems, setSems] = useState([]);
+
+    const userRole = localStorage.getItem('userRole');
     
     useEffect(() => {
+
+        if (userRole !== "staff") return;
         const fetchData = async () => {
             try {
                 const response = await fetch('/data.json');
@@ -23,17 +27,19 @@ const StaffPage = () => {
         };
         
         fetchData();
-    }, []);
+    }, [userRole]);
 
-    return (
+
+    if (userRole == "staff"){
+        return (
         <div>
             {/* Staff minimum info */}
             <div className="flex justify-center gap-20">
                 <div className="p-20">
                     <p className="pb-1 text-3xl font-bold">Staffs' Name: Mannan Vai</p>
-                    {/* <p className="pt-1 text-xl font-semibold">Student ID: 20701043</p>
-                    <p className="pt-1 text-xl font-semibold">Current Semester: 6th Semester</p>
-                    <p className="pt-1 text-xl font-semibold">Session: 2019-2020</p> */}
+                    <p className="pt-1 text-xl font-semibold">Staff ID: 50081</p>
+                    {/* <p className="pt-1 text-xl font-semibold">Current Semester: 6th Semester</p> */}
+                    {/* <p className="pt-1 text-xl font-semibold">Session: 2019-2020</p> */}
                 </div>
                 <div className="flex justify-center items-center">
                     <img className="inline-block h-36 w-36 rounded-full ring-8 ring-slate-400" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80" alt=""/>
@@ -85,6 +91,17 @@ const StaffPage = () => {
             </div>
         </div>
     );
+    } else {
+        return (
+          <div className="flex justify-center items-center h-screen">
+            <div>
+                Unauthorised Access...
+            </div>
+          </div>
+        )
+      }
+
+    
 };
 
 export default StaffPage;

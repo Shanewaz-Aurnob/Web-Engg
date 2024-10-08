@@ -6,17 +6,24 @@ import { useEffect, useState } from "react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Popover,  } from "@/components/ui/popover";
 import CountdownDisplay from "./CountdownDisplay";
+import { useParams } from 'react-router-dom';
 
 const StudentPage = () => {
-  // const { ongoingSession } = useOutletContext();
-
-  // console.log(ongoingSession);
-  const studentId = 19701008;
+  // const studentId = 19701008;
   const [studentData, setStudentData] = useState([]);
 
+  const userRole = localStorage.getItem('userRole');
+
+  const { id} = useParams();
+  console.log('User ID:', id);
+  
+
+
   useEffect(() => {
+
+    if (userRole !== "student") return;
     // Fetch  details
-    fetch(`http://localhost:5000/api/attendance/teacher/courses?student_id=${studentId}`)
+    fetch(`http://localhost:5000/api/attendance/teacher/courses?student_id=${id}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -29,16 +36,17 @@ const StudentPage = () => {
       .catch((error) => {
         console.error("Error fetching teacher details:", error);
       });
-  }, []);
+  }, [id, userRole]);
 
 
-  return (
+  if (userRole == "student"){
+    return (
     <div>
       {/* Students minimum info */}
       <div className="flex justify-center gap-20">
         <div className="p-10">
           <p className="pb-1 text-3xl font-bold">Students' Name: Khadiza Jarin Roza</p>
-          <p className="pt-1 text-xl">Student ID: {studentId }</p>
+          <p className="pt-1 text-xl">Student ID: {id}</p>
           <p className="pt-1 text-xl">Current Semester: 6th Semester</p>
           <p className="pt-1 text-xl">Session: 2019-2020</p>
         </div>
@@ -125,6 +133,16 @@ const StudentPage = () => {
       </div>
     </div>
   );
+  } else {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div>
+            Unauthorised Access...
+        </div>
+      </div>
+    )
+  }
+  
 };
 
 export default StudentPage;
