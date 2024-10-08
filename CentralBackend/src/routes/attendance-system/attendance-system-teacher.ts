@@ -383,6 +383,42 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
   
   
 
+const studentInfoSchema = z.object({
+  student_id: z.coerce.number(),
+})
+
+attendanceSystemTeacherRouter.get("/student-info", async (req, res) => {
+  try {
+    const { student_id } = studentInfoSchema.parse(req.query);
+
+    const query = db
+      .selectFrom("Student")
+      .where("Student.student_id", "=", student_id)
+      .innerJoin("User", "User.user_id", "Student.user_id")
+      .innerJoin("Academic_Session", "Academic_Session.academic_session_id", "Student.academic_session_id")
+      .select([
+        "Student.student_id",
+        "User.email", 
+        "User.first_name",
+        "User.last_name",
+        "Academic_Session.session",
+        "Academic_Session.academic_session_id"
+      ]);
+
+    const student = await query.execute();
+
+    return res.status(200).json(student[0]);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        name: "Invalid student id",
+        message: JSON.parse(error.message),
+      });
+    }
+    return res.status(500).json({ message: "Internal server error", error });
+  }
+})
+
   
   
 
