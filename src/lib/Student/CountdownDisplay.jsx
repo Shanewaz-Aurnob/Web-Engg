@@ -16,7 +16,7 @@ const CountdownDisplay = (id) => {
     const getCurrentDateTime = () => {
       const now = new Date();
       const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+      const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
@@ -92,6 +92,7 @@ const CountdownDisplay = (id) => {
            student_id:id,
            session_id: sessionTime.session_id
         };
+        console.log("attendance submit data",data)
 
         // Send the update attendance request
         fetch('http://localhost:5000/api/attendance/teacher/update-attendance', {
@@ -114,7 +115,6 @@ const CountdownDisplay = (id) => {
         })
         .catch((error) => {
             console.error('Error updating attendance:', error);
-            // Optionally show an error message to the user
         });
     } else {
         console.log(false);

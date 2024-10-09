@@ -13,15 +13,29 @@ const StudentPage = () => {
   const [studentData, setStudentData] = useState([]);
 
   const userRole = localStorage.getItem('userRole');
-
   const { id} = useParams();
   console.log('User ID:', id);
+
+  const [studentName, setStudentName] = useState({});
+
+  useEffect(() => {
+    if (userRole !== "student") return
+
+    fetch(`http://localhost:5000/api/attendance/teacher/student-info?student_id=${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setStudentName(data);
+        console.log("student name id",data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [id, userRole]);
   
 
 
   useEffect(() => {
 
-    if (userRole !== "student") return;
     // Fetch  details
     fetch(`http://localhost:5000/api/attendance/teacher/courses?student_id=${id}`)
       .then((res) => res.json())
@@ -45,10 +59,10 @@ const StudentPage = () => {
       {/* Students minimum info */}
       <div className="flex justify-center gap-20">
         <div className="p-10">
-          <p className="pb-1 text-3xl font-bold">Students' Name: Khadiza Jarin Roza</p>
+          <p className="pb-1 text-3xl font-bold">Students' Name: {studentName.first_name} {studentName.last_name} </p>
           <p className="pt-1 text-xl">Student ID: {id}</p>
-          <p className="pt-1 text-xl">Current Semester: 6th Semester</p>
-          <p className="pt-1 text-xl">Session: 2019-2020</p>
+          <p className="pt-1 text-xl">Email: {studentName.email}</p>
+          <p className="pt-1 text-xl">Session: {studentName.session }</p>
         </div>
         <div className="flex justify-center items-center">
           <img className="inline-block h-36 w-36 rounded-full ring-8 ring-slate-400" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80" alt="" />
