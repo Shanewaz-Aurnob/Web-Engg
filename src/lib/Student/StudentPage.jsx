@@ -21,7 +21,7 @@ const StudentPage = () => {
   useEffect(() => {
     if (userRole !== "student") return
 
-    fetch(`http://localhost:5000/api/attendance/teacher/student-info?student_id=${id}`)
+    fetch(`http://bike-csecu.com:5000/api/attendance/teacher/student-info?student_id=${id}`)
       .then((res) => res.json())
       .then((data) => {
         setStudentName(data);
@@ -35,7 +35,7 @@ const StudentPage = () => {
   useEffect(() => {
 
     // Fetch  details
-    fetch(`http://localhost:5000/api/attendance/teacher/courses?student_id=${id}`)
+    fetch(`http://bike-csecu.com:5000/api/attendance/teacher/courses?student_id=${id}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {

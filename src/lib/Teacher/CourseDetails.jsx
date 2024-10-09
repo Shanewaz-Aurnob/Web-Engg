@@ -35,7 +35,7 @@ const CourseDetails = () => {
 
     useEffect(() => {
         // Fetch course details
-        fetch(`http://localhost:5000/api/attendance/teacher/get-attendance?course_id=${state.myObj.course_id}&academic_session_id=20180801`)
+        fetch(`http://bike-csecu.com:5000/api/attendance/teacher/get-attendance?course_id=${state.myObj.course_id}&academic_session_id=20180801`)
             .then((res) => res.json())
             .then((data) => {
                 setDetails(data);
