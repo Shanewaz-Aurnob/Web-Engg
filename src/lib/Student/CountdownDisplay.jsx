@@ -109,6 +109,7 @@ const CountdownDisplay = () => {
         })
         .then((data) => {
             console.log('Attendance updated successfully:', data);
+            alert('Attendance updated successfully!');
             // Optionally show a success message to the user
         })
         .catch((error) => {

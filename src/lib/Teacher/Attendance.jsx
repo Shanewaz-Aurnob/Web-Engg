@@ -75,6 +75,24 @@ const Attendance = () => {
       }
       return result;
     };
+
+
+    const getCurrentDateTime = () => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      // const seconds = String(now.getSeconds()).padStart(2, '0');
+  
+      const currentDate = `${year}-${month}-${day}`;
+      const currentTime = `${hours}:${minutes}:00`;
+  
+      return { currentDate, currentTime };
+    };
+  
+    const { currentDate } = getCurrentDateTime();
   
 
 
@@ -156,7 +174,7 @@ const Attendance = () => {
         
         // Third API call using newSessionID
         console.log("session id for api", newSessionID); // Now it will show the correct session ID
-        const attendanceResponse = await fetch(`http://localhost:5000/api/attendance/teacher/create-attendance?session_id=${newSessionID}&currentDate=2014-10-2`, {
+        const attendanceResponse = await fetch(`http://localhost:5000/api/attendance/teacher/create-attendance?session_id=${newSessionID}&currentDate=${currentDate}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

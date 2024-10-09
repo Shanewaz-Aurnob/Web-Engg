@@ -123,7 +123,7 @@ const CourseDetails = () => {
 
 
             <div ref={targetRef} 
-            // style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}
+            style={{ position: 'absolute', top: '-10000px', left: '-10000px', width: '100%', height: 'auto' }}
             >
                 <AttendanceSheet courseCode={courseCode} teacherName={teacherName} details={details}/>
             </div>

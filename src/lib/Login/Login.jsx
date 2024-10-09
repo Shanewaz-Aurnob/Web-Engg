@@ -21,16 +21,16 @@ const Login = () => {
 
         // Navigation logic
         if (role === 'teacher' && id === '5008' && password === 'teacher@08') {
-            localStorage.setItem('userRole', role); // Save role to localStorage
+            localStorage.setItem('userRole', role); 
             navigate('/dashboard/attendance');
         } else if (role === 'student' && (id === '19701008' || id === '19701015' || id === '19701002' || id === '19701037' || id === '19701024') && password === 'student@05') {
-            localStorage.setItem('userRole', role); // Save role to localStorage
+            localStorage.setItem('userRole', role); 
             navigate(`/dashboard/studentPage/${id}`);
         } else if (role === 'staff' && password === 'staff@01') {
-            localStorage.setItem('userRole', role); // Save role to localStorage
+            localStorage.setItem('userRole', role); 
             navigate('/dashboard/staffPage');
         } else {
-            setErrorMessage('Invalid credentials or role'); // Set error message
+            setErrorMessage('Invalid credentials or role');
         }
     };
 
