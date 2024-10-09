@@ -3,14 +3,14 @@ import QRCode from "qrcode.react"; // Import QRCode component
 // import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const CountdownDisplay = () => {
+const CountdownDisplay = (id) => {
 
   const [sessionTime, setSessionTime] = useState(null);
   const [qrCodeData, setQrCodeData] = useState(""); // State to store QR code data
   const [countdown, setCountdown] = useState(0);
   const [secretCode, setSecretCode] = useState('');
 
-  const id = 20180801;
+  const aca_id = 20180801;
 
   useEffect(() => {
     const getCurrentDateTime = () => {
@@ -29,7 +29,7 @@ const CountdownDisplay = () => {
     };
   
     const { currentDate, currentTime } = getCurrentDateTime();
-    const url = `http://localhost:5000/api/attendance/teacher/class?academic_session_id=${id}&currentDate=${currentDate}&currentTime=${currentTime}`;
+    const url = `http://localhost:5000/api/attendance/teacher/class?academic_session_id=${aca_id}&currentDate=${currentDate}&currentTime=${currentTime}`;
     // console.log(url);
     fetch(url)
       .then((res) => res.json())
@@ -88,8 +88,8 @@ const CountdownDisplay = () => {
         console.log(true);
         
         // Prepare the data to be sent to the API
-        const data = {
-           student_id:19701015,
+        const data = {  
+           student_id:id,
            session_id: sessionTime.session_id
         };
 
@@ -110,7 +110,7 @@ const CountdownDisplay = () => {
         .then((data) => {
             console.log('Attendance updated successfully:', data);
             alert('Attendance updated successfully!');
-            // Optionally show a success message to the user
+            
         })
         .catch((error) => {
             console.error('Error updating attendance:', error);

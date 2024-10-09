@@ -59,7 +59,7 @@ const StudentPage = () => {
       </div>
 
       {/* Ongoing session */}
-      <CountdownDisplay />
+      <CountdownDisplay id={id} />
 
       {/* student information */}
       <div>
