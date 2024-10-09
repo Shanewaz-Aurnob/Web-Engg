@@ -9,6 +9,7 @@ const CountdownDisplay = (id) => {
   const [qrCodeData, setQrCodeData] = useState(""); // State to store QR code data
   const [countdown, setCountdown] = useState(0);
   const [secretCode, setSecretCode] = useState('');
+  const student_id = id;
 
   const aca_id = 20180801;
 
@@ -85,22 +86,22 @@ const CountdownDisplay = (id) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (secretCode === sessionTime.secret_code) {
-        console.log(true);
+        // console.log(true);
         
         // Prepare the data to be sent to the API
         const data = {  
-           student_id:id,
+           student_id: id.id,
            session_id: sessionTime.session_id
         };
         console.log("attendance submit data",data)
 
         // Send the update attendance request
         fetch('http://localhost:5000/api/attendance/teacher/update-attendance', {
-            method: 'PATCH', // Use POST method
+            method: 'PATCH', 
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data), // Convert data to JSON
+            body: JSON.stringify(data), 
         })
         .then((response) => {
             if (!response.ok) {
@@ -118,7 +119,6 @@ const CountdownDisplay = (id) => {
         });
     } else {
         console.log(false);
-        // Optionally show a message indicating that the code was incorrect
     }
 };
 

@@ -9,11 +9,11 @@ import CountdownDisplay from "./CountdownDisplay";
 import { useParams } from 'react-router-dom';
 
 const StudentPage = () => {
-  // const studentId = 19701008;
+  // const studentId = id;
   const [studentData, setStudentData] = useState([]);
 
   const userRole = localStorage.getItem('userRole');
-  const { id} = useParams();
+  const {id} = useParams();
   console.log('User ID:', id);
 
   const [studentName, setStudentName] = useState({});
@@ -32,8 +32,6 @@ const StudentPage = () => {
       });
   }, [id, userRole]);
   
-
-
   useEffect(() => {
 
     // Fetch  details
@@ -103,9 +101,9 @@ const StudentPage = () => {
                   <TableCell className="p-3 text-center">{course.credit}</TableCell>
                   <TableCell className="p-3 text-center">{course.course_type}</TableCell>
                   <TableCell className="p-3 text-center">{course.exam_minutes}</TableCell>
-                  <TableCell className="p-3 text-center">{course.attended_classes}</TableCell>
                   <TableCell className="p-3 text-center">{course.total_held_class}</TableCell>
-                  <TableCell className="p-3 text-center">{((course.total_held_class/ course.attended_classes) * 100).toFixed(2)} %</TableCell>
+                  <TableCell className="p-3 text-center">{course.attended_classes}</TableCell>
+                  <TableCell className="p-3 text-center">{((course.attended_classes/ course.total_held_class) * 100).toFixed(2)} %</TableCell>
                   <TableCell className="p-3 text-center">
                     <Popover>
                       {/* <PopoverTrigger><Button>{calculateAverage(course.ctma_marks)}</Button></PopoverTrigger> */}

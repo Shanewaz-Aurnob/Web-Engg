@@ -23,7 +23,7 @@ const CourseDetails = () => {
   useEffect(() => {
     console.log('Location state:', location.state);
     if (state) {
-      console.log('state:', state.myObj.course_title);
+      console.log('state:', state.myObj);
     } else {
       console.log('No course data available');
     }
@@ -35,7 +35,7 @@ const CourseDetails = () => {
 
     useEffect(() => {
         // Fetch course details
-        fetch('http://localhost:5000/api/attendance/teacher/get-attendance?course_id=5&academic_session_id=20180801')
+        fetch(`http://localhost:5000/api/attendance/teacher/get-attendance?course_id=${state.myObj.course_id}&academic_session_id=20180801`)
             .then((res) => res.json())
             .then((data) => {
                 setDetails(data);

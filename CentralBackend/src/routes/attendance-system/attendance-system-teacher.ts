@@ -316,6 +316,7 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
       res.status(500).send('Server error');
     }
   });
+    
   
   
   const semesterResult = z.object({
