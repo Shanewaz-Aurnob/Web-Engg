@@ -40,6 +40,7 @@ const StudentPage = () => {
       .then((data) => {
         if (Array.isArray(data)) {
           setStudentData(data);
+          console.log(studentData)
         } else {
           console.error("Fetched data is not an array:", data);
         }
@@ -88,7 +89,7 @@ const StudentPage = () => {
                 <TableHead className="p-3 text-center text-lg text-black">Exam Minutes</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Total Held Classes</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Attended Classes</TableHead>
-                <TableHead className="p-3 text-center text-lg text-black">Attendance Percentage</TableHead>
+                {/* <TableHead className="p-3 text-center text-lg text-black">Attendance Percentage</TableHead> */}
                 {/* <TableHead className="p-3 text-center text-lg text-black">Average CATM</TableHead> */}
               </TableRow>
             </TableHeader>
@@ -103,7 +104,7 @@ const StudentPage = () => {
                   <TableCell className="p-3 text-center">{course.exam_minutes}</TableCell>
                   <TableCell className="p-3 text-center">{course.total_held_class}</TableCell>
                   <TableCell className="p-3 text-center">{course.attended_classes}</TableCell>
-                  <TableCell className="p-3 text-center">{((course.attended_classes/ course.total_held_class) * 100).toFixed(2)} %</TableCell>
+                  {/* <TableCell className="p-3 text-center">{((course.attended_classes/ course.total_held_class) * 100).toFixed(2)} %</TableCell> */}
                   <TableCell className="p-3 text-center">
                     <Popover>
                       {/* <PopoverTrigger><Button>{calculateAverage(course.ctma_marks)}</Button></PopoverTrigger> */}

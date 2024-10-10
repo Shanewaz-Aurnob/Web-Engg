@@ -322,6 +322,8 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
   const semesterResult = z.object({
     student_id: z.coerce.number()
 })
+
+
   attendanceSystemTeacherRouter.get("/courses", async (req, res) => {
   try {
       const {
@@ -345,23 +347,25 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
       const courses = await query1.execute();
 
       const coursesPromise = courses.map( async (course_id, ind) => {
-          const query2 = 
-          db
+          const query2 = db
           .selectFrom("Course")
           .where("Course.course_id", "=", course_id.course_id)
           .selectAll()
           const query3= db.selectFrom("Create_Class")
           .where("Create_Class.course_id", "=", course_id.course_id)
           .selectAll()
-          const result2 = await query3.execute();
 
           const result = await query2.execute();
+          const result2 = await query3.execute();
+
+          
 
           const query4=db.selectFrom("Student_Attendance")
           .where("Student_Attendance.student_id" ,"=", student_id)
           .where("Student_Attendance.status", "=", "P")
           .innerJoin("Create_Class", "Create_Class.session_id", "Student_Attendance.session_id")
         .selectAll()
+
         const result3= await query4.execute();
           return {...result[0], total_held_class: result2.length, attended_classes: result3.length};
       
@@ -392,6 +396,10 @@ attendanceSystemTeacherRouter.get("/student-info", async (req, res) => {
   try {
     const { student_id } = studentInfoSchema.parse(req.query);
 
+    if (!student_id || isNaN(student_id)) {
+      return res.status(400).json({ message: "Invalid or missing student_id" });
+    }
+
     const query = db
       .selectFrom("Student")
       .where("Student.student_id", "=", student_id)
@@ -408,6 +416,10 @@ attendanceSystemTeacherRouter.get("/student-info", async (req, res) => {
 
     const student = await query.execute();
 
+    if (!student || student.length === 0) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
     return res.status(200).json(student[0]);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -418,9 +430,8 @@ attendanceSystemTeacherRouter.get("/student-info", async (req, res) => {
     }
     return res.status(500).json({ message: "Internal server error", error });
   }
-})
+});
 
-  
   
 
   export default attendanceSystemTeacherRouter;
