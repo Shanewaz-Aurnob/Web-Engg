@@ -53,7 +53,6 @@ export async function paginatedResults(
             }
           : null,
     };
-
     return res.status(200).json(result);
   } catch (error) {
     try {

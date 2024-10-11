@@ -11,7 +11,7 @@ const CountdownDisplay = (id) => {
   const [secretCode, setSecretCode] = useState('');
   const student_id = id;
 
-  const aca_id = 20180801;
+  const aca_id = 20220101;
 
   useEffect(() => {
     const getCurrentDateTime = () => {
@@ -30,7 +30,7 @@ const CountdownDisplay = (id) => {
     };
   
     const { currentDate, currentTime } = getCurrentDateTime();
-    const url = `http://bike-csecu.com:5000/api/attendance/teacher/class?academic_session_id=${aca_id}&currentDate=${currentDate}&currentTime=${currentTime}`;
+    const url = `http://localhost:5000/api/attendance/teacher/class?academic_session_id=${aca_id}&currentDate=${currentDate}&currentTime=${currentTime}`;
     // console.log(url);
     fetch(url)
       .then((res) => res.json())
@@ -96,7 +96,7 @@ const CountdownDisplay = (id) => {
         console.log("attendance submit data",data)
 
         // Send the update attendance request
-        fetch('http://bike-csecu.com:5000/api/attendance/teacher/update-attendance', {
+        fetch('http://localhost:5000/api/attendance/teacher/update-attendance', {
             method: 'PATCH', 
             headers: {
                 'Content-Type': 'application/json',

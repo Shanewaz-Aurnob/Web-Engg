@@ -318,12 +318,13 @@ export interface ExamActivityType {
 }
 
 export interface ExamBill {
-  academic_semester_id: number;
+  academic_session_id: number;
   department_id: number;
-  exam_bill_id: number;
-  exam_bill_payment: number;
+  exam_bill_id: Generated<number>;
   exam_bill_position: number;
-  exam_session: string;
+  exam_id: number;
+  file_path: string | null;
+  status: string | null;
   teacher_id: number;
 }
 
@@ -394,6 +395,7 @@ export interface Image {
   image_id: Generated<number>;
   image_path: Buffer | null;
   image_type: string | null;
+  remote_image_url: string | null;
 }
 
 export interface Journal {
@@ -408,7 +410,6 @@ export interface Marksheet {
   course_id: number;
   exam_id: number;
   fem: Generated<number>;
-  gpa: Generated<number | null>;
   student_id: number;
 }
 

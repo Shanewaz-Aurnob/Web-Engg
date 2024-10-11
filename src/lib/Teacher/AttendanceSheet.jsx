@@ -47,6 +47,7 @@ const AttendanceSheet = ({  teacherName, details }) => {
         <h1 className="font-bold text-xl">University of Chittagong</h1>
         <h2>Department of Computer Science and Engineering</h2>
         <p>Course Teacher: {teacherName}</p>
+     
       </div>
       <table className="w-full bg-white border-2 border-black">
         <thead>

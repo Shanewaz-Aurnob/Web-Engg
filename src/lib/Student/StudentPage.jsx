@@ -21,7 +21,7 @@ const StudentPage = () => {
   useEffect(() => {
     if (userRole !== "student") return
 
-    fetch(`http://bike-csecu.com:5000/api/attendance/teacher/student-info?student_id=${id}`)
+    fetch(`http://localhost:5000/api/attendance/teacher/student-info?student_id=${id}`)
       .then((res) => res.json())
       .then((data) => {
         setStudentName(data);
@@ -35,12 +35,12 @@ const StudentPage = () => {
   useEffect(() => {
 
     // Fetch  details
-    fetch(`http://bike-csecu.com:5000/api/attendance/teacher/courses?student_id=${id}`)
+    fetch(`http://localhost:5000/api/attendance/teacher/courses?student_id=${id}&academic_session_id=20220101`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
           setStudentData(data);
-          console.log(studentData)
+          // console.log(studentData)
         } else {
           console.error("Fetched data is not an array:", data);
         }
@@ -61,7 +61,7 @@ const StudentPage = () => {
           <p className="pb-1 text-3xl font-bold">Students' Name: {studentName.first_name} {studentName.last_name} </p>
           <p className="pt-1 text-xl">Student ID: {id}</p>
           <p className="pt-1 text-xl">Email: {studentName.email}</p>
-          <p className="pt-1 text-xl">Session: {studentName.session }</p>
+          {/* <p className="pt-1 text-xl">Session: {studentName.session }</p> */}
         </div>
         <div className="flex justify-center items-center">
           <img className="inline-block h-36 w-36 rounded-full ring-8 ring-slate-400" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80" alt="" />
@@ -89,7 +89,7 @@ const StudentPage = () => {
                 <TableHead className="p-3 text-center text-lg text-black">Exam Minutes</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Total Held Classes</TableHead>
                 <TableHead className="p-3 text-center text-lg text-black">Attended Classes</TableHead>
-                {/* <TableHead className="p-3 text-center text-lg text-black">Attendance Percentage</TableHead> */}
+                <TableHead className="p-3 text-center text-lg text-black">Attendance Percentage</TableHead>
                 {/* <TableHead className="p-3 text-center text-lg text-black">Average CATM</TableHead> */}
               </TableRow>
             </TableHeader>
@@ -104,7 +104,7 @@ const StudentPage = () => {
                   <TableCell className="p-3 text-center">{course.exam_minutes}</TableCell>
                   <TableCell className="p-3 text-center">{course.total_held_class}</TableCell>
                   <TableCell className="p-3 text-center">{course.attended_classes}</TableCell>
-                  {/* <TableCell className="p-3 text-center">{((course.attended_classes/ course.total_held_class) * 100).toFixed(2)} %</TableCell> */}
+                  <TableCell className="p-3 text-center">{((course.attended_classes/ course.total_held_class) * 100).toFixed(2)} %</TableCell>
                   <TableCell className="p-3 text-center">
                     <Popover>
                       {/* <PopoverTrigger><Button>{calculateAverage(course.ctma_marks)}</Button></PopoverTrigger> */}

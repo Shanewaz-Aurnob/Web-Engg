@@ -31,7 +31,7 @@ const Attendance = () => {
     if (userRole !== "teacher") return;
 
     // Fetch teacher details
-    fetch('http://bike-csecu.com:5000/api/teacher/5008')
+    fetch('http://localhost:5000/api/teacher/5008')
       .then((res) => res.json())
       .then((data) => {
         setTeacherData({
@@ -45,11 +45,11 @@ const Attendance = () => {
       });
 
 
-    fetch('http://bike-csecu.com:5000/api/attendance/teacher?page=2')
+    fetch('http://localhost:5000/api/attendance/teacher?page=1')
       .then((res) => res.json())
       .then((data) => {
         setCourses(data.data);
-        // console.log(data.data);
+        console.log(data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -141,7 +141,7 @@ const Attendance = () => {
   
     try {
       // First API call
-      const response = await fetch('http://bike-csecu.com:5000/api/attendance/teacher/create-session', {
+      const response = await fetch('http://localhost:5000/api/attendance/teacher/create-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ const Attendance = () => {
         setSessionActive(true);
     
         // Use the new session ID for the next API call
-        const studentsResponse = await fetch(`http://bike-csecu.com:5000/api/attendance/teacher/students-by-acc-id?academic_session_id=${course.academic_session_id}`);
+        const studentsResponse = await fetch(`http://localhost:5000/api/attendance/teacher/students-by-acc-id?academic_session_id=${course.academic_session_id}`);
         
         if (!studentsResponse.ok) {
           throw new Error('Failed to fetch students');
@@ -174,7 +174,7 @@ const Attendance = () => {
         
         // Third API call using newSessionID
         console.log("session id for api", newSessionID); // Now it will show the correct session ID
-        const attendanceResponse = await fetch(`http://bike-csecu.com:5000/api/attendance/teacher/create-attendance?session_id=${newSessionID}&currentDate=${currentDate}`, {
+        const attendanceResponse = await fetch(`http://localhost:5000/api/attendance/teacher/create-attendance?session_id=${newSessionID}&currentDate=${currentDate}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -311,7 +311,7 @@ useEffect(() => {
   };
 
   const { currentDate, currentTime } = getCurrentDateTime();
-  const url = `http://bike-csecu.com:5000/api/attendance/teacher/class?academic_session_id=20180801&currentDate=${currentDate}&currentTime=${currentTime}`;
+  const url = `http://localhost:5000/api/attendance/teacher/class?academic_session_id=20220101&currentDate=${currentDate}&currentTime=${currentTime}`;
   // console.log(url);
   fetch(url)
     .then((res) => res.json())

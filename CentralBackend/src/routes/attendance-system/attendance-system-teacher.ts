@@ -13,14 +13,18 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
 
         var query = db
         .selectFrom('Course_Teacher')
-        .innerJoin('Courses_in_Semester', 'Courses_in_Semester.course_id', 'Course_Teacher.course_id')
+        .innerJoin('Courses_in_Semester', (join) => 
+        join
+        .onRef("Courses_in_Semester.academic_session_id", "=", "Course_Teacher.academic_session_id")
+        .onRef("Courses_in_Semester.course_id", "=", "Course_Teacher.course_id")
+        )
         .innerJoin('Academic_Session', 'Academic_Session.academic_session_id', 'Course_Teacher.academic_session_id')
         .innerJoin('Course', 'Course.course_id', 'Course_Teacher.course_id')
         .innerJoin('Program', 'Academic_Session.program_id', 'Program.program_id')
         .selectAll()
         .where('Course_Teacher.teacher_id', '=', teacherId);
         
-
+        
         paginatedResults(query, req, res);
       }
        catch (error) {
@@ -107,6 +111,7 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
         .where('Create_Class.class_startDate', '=', currentDateValue)
         .where('Create_Class.class_endTime', '>=', currentTimeValue)
         .execute();
+        console.log(result)
   
       // Send the query result as the response
       res.json(result);
@@ -234,6 +239,9 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
   
       // Extract session IDs and dates
       const sessionIds = sessions.map(session => session.session_id);
+
+      if(sessionIds.length == 0) return res.json([]);
+      console.log(sessionIds);
   
       // Get student attendance for those sessions
       const attendanceRecords = await db
@@ -318,61 +326,84 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
   });
     
   
+  type responseType = {
+    total_held_class: number;
+    attended_classes: number;
+    course_id: number;
+    course_code: string;
+    course_title: string;
+    course_type: "Lab" | "Project" | "Theory" | "Thesis" | "Viva" | null;
+    credit: number;
+    department_id: number;
+    exam_minutes: number;
+  }
+
   
   const semesterResult = z.object({
-    student_id: z.coerce.number()
+    student_id: z.coerce.number(),
+    academic_session_id: z.coerce.number()
 })
 
 
   attendanceSystemTeacherRouter.get("/courses", async (req, res) => {
   try {
       const {
-          student_id
+          student_id,
+          academic_session_id
       } = semesterResult.parse(req.query);
 
-      const query = db
-      .selectFrom("Student")
-      .where("Student.student_id", "=", student_id)
-      .select(["Student.academic_session_id as academic_session_id"])
-      
 
-      const academic_session_id = await query.execute();
-
-      const query1 = db
+      const courses = await db
       .selectFrom("Course_Teacher")
       .distinct()
-      .where("Course_Teacher.academic_session_id", "=", academic_session_id[0].academic_session_id)
+      .where("Course_Teacher.academic_session_id", "=", academic_session_id)
       .select(["Course_Teacher.course_id as course_id"])
+      .execute();
 
-      const courses = await query1.execute();
-
-      const coursesPromise = courses.map( async (course_id, ind) => {
-          const query2 = db
-          .selectFrom("Course")
-          .where("Course.course_id", "=", course_id.course_id)
-          .selectAll()
-          const query3= db.selectFrom("Create_Class")
-          .where("Create_Class.course_id", "=", course_id.course_id)
-          .selectAll()
-
-          const result = await query2.execute();
-          const result2 = await query3.execute();
-
-          
-
-          const query4=db.selectFrom("Student_Attendance")
-          .where("Student_Attendance.student_id" ,"=", student_id)
-          .where("Student_Attendance.status", "=", "P")
-          .innerJoin("Create_Class", "Create_Class.session_id", "Student_Attendance.session_id")
+      const response = courses.map(async(course) => {
+        const courseDetails = await db
+        .selectFrom("Course")
+        .where("course_id", "=", course.course_id)
         .selectAll()
+        .executeTakeFirstOrThrow();
 
-        const result3= await query4.execute();
-          return {...result[0], total_held_class: result2.length, attended_classes: result3.length};
-      
+        // const total_held_class = await db
+        // .selectFrom("Create_Class")
+        // .where("course_id", "=", course.course_id)
+        // .where("academic_session_id", "=", academic_session_id)
+        // .select(({fn}) => [
+        //   fn.count<number>("Create_Class.session_id").as("total_classes")
+        // ])
+        // .executeTakeFirstOrThrow();
+
+
+        const sessionsObj = await db
+        .selectFrom("Create_Class")
+        .where("academic_session_id", "=", academic_session_id)
+        .where("course_id", "=", course.course_id)
+        .select("session_id")
+        .execute();
+
+        const sessions = sessionsObj.map((session) => session.session_id)
+
+        const student_attended = await db
+        .selectFrom("Student_Attendance")
+        .where("session_id", "in", sessions)
+        .where("student_id", "=", student_id)
+        .where('status', "=", "P")
+        .selectAll()
+        .execute();
+
+        return {
+          total_held_class: sessionsObj.length,
+          attended_classes: student_attended.length,
+          ...courseDetails
+        }
       })
-      const allCourses = await Promise.all(coursesPromise);
 
-      return res.status(200).json(allCourses);
+      const data = await Promise.all(response);
+
+      res.status(200).json(data);
 
   } catch (error) {
       if (error instanceof z.ZodError) {

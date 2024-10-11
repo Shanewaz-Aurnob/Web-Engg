@@ -18,7 +18,7 @@ const CourseDetails = () => {
     // const [courses, setCourses] = useState([]);
 
     const {state} = useLocation();
-    console.log("course details",state);
+
 
   useEffect(() => {
     console.log('Location state:', location.state);
@@ -35,11 +35,11 @@ const CourseDetails = () => {
 
     useEffect(() => {
         // Fetch course details
-        fetch(`http://bike-csecu.com:5000/api/attendance/teacher/get-attendance?course_id=${state.myObj.course_id}&academic_session_id=20180801`)
+        fetch(`http://localhost:5000/api/attendance/teacher/get-attendance?course_id=${state.myObj.course_id}&academic_session_id=20220101`)
             .then((res) => res.json())
             .then((data) => {
                 setDetails(data);
-                console.log(data);
+                console.log("studentData > ", data);
             })
             .catch((error) => {
                 console.error("Error fetching teacher details:", error);
@@ -47,7 +47,7 @@ const CourseDetails = () => {
     }, []);
 
     useEffect(() => {
-        if (details) {
+        if (details.length > 0 || details) {
             const sessionData = [];
             const students = {};
 
