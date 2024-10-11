@@ -344,133 +344,56 @@ attendanceSystemTeacherRouter.get("/", async (req, res) => {
 })
 
 
-  attendanceSystemTeacherRouter.get("/courses", async (req, res) => {
+attendanceSystemTeacherRouter.get("/courses", async (req, res) => {
   try {
-      const {
-          student_id,
-          academic_session_id
-      } = semesterResult.parse(req.query);
-
-
-      const courses = await db
-      .selectFrom("Course_Teacher")
-      .distinct()
-      .where("Course_Teacher.academic_session_id", "=", academic_session_id)
-      .select(["Course_Teacher.course_id as course_id"])
-      .execute();
-
-<<<<<<< HEAD
-      const response = courses.map(async(course) => {
-        const courseDetails = await db
-        .selectFrom("Course")
-        .where("course_id", "=", course.course_id)
-        .selectAll()
-        .executeTakeFirstOrThrow();
-
-        // const total_held_class = await db
-        // .selectFrom("Create_Class")
-        // .where("course_id", "=", course.course_id)
-        // .where("academic_session_id", "=", academic_session_id)
-        // .select(({fn}) => [
-        //   fn.count<number>("Create_Class.session_id").as("total_classes")
-        // ])
-        // .executeTakeFirstOrThrow();
-
-
-        const sessionsObj = await db
-        .selectFrom("Create_Class")
-        .where("academic_session_id", "=", academic_session_id)
-        .where("course_id", "=", course.course_id)
-        .select("session_id")
-        .execute();
-
-        const sessions = sessionsObj.map((session) => session.session_id)
-
-        const student_attended = await db
-        .selectFrom("Student_Attendance")
-        .where("session_id", "in", sessions)
-        .where("student_id", "=", student_id)
-        .where('status', "=", "P")
-        .selectAll()
-        .execute();
-
-        return {
-          total_held_class: sessionsObj.length,
-          attended_classes: student_attended.length,
-          ...courseDetails
-        }
-=======
-      const courses = await query1.execute();
-
-      const coursesPromise = courses.map( async (course_id, ind) => {
-          const query2 = 
-          db
-          .selectFrom("Course")
-          .where("Course.course_id", "=", course_id.course_id)
-          .selectAll()
-          const query3= db.selectFrom("Create_Class")
-          .where("Create_Class.course_id", "=", course_id.course_id)
-          .selectAll()
-          const result2 = await query3.execute();
-
-          const result = await query2.execute();
-
-          const query4=db.selectFrom("Student_Attendance")
-          .where("Student_Attendance.student_id" ,"=", student_id)
-          .where("Student_Attendance.status", "=", "P")
-          .innerJoin("Create_Class", "Create_Class.session_id", "Student_Attendance.session_id")
-        .selectAll()
-        const result3= await query4.execute();
-          return {...result[0], total_held_class: result2.length, attended_classes: result3.length};
+      const { student_id, academic_session_id } = semesterResult.parse(req.query);
       
->>>>>>> 6605a44022112a1c44d5ac2de7e82137a681312f
-      })
+      const courses = await db
+          .selectFrom("Course_Teacher")
+          .distinct()
+          .where("Course_Teacher.academic_session_id", "=", academic_session_id)
+          .select(["Course_Teacher.course_id as course_id"])
+          .execute();
+      
+      const response = await Promise.all(courses.map(async (course) => {
+          const courseDetails = await db
+              .selectFrom("Course")
+              .where("course_id", "=", course.course_id)
+              .selectAll()
+              .executeTakeFirstOrThrow();
 
-      const data = await Promise.all(response);
+          const sessionsObj = await db
+              .selectFrom("Create_Class")
+              .where("academic_session_id", "=", academic_session_id)
+              .where("course_id", "=", course.course_id)
+              .select("session_id")
+              .execute();
 
-      res.status(200).json(data);
+          const sessions = sessionsObj.map(session => session.session_id);
+          
+          const student_attended = await db
+              .selectFrom("Student_Attendance")
+              .where("session_id", "in", sessions)
+              .where("student_id", "=", student_id)
+              .where('status', "=", "P")
+              .selectAll()
+              .execute();
 
+          return {
+              total_held_class: sessionsObj.length,
+              attended_classes: student_attended.length,
+              ...courseDetails
+          };
+      }));
+      
+      res.status(200).json(response);
   } catch (error) {
       if (error instanceof z.ZodError) {
-          return res.status(400).json({
-              name: "Invalid academic session id",
-              message: JSON.parse(error.message),
-          });
+          return res.status(400).json({ name: "Invalid academic session id", message: JSON.parse(error.message) });
       }
-      return res.status(500).json({ message: "Internal server error", error});
+      return res.status(500).json({ message: "Internal server error", error });
   }
-})
-
-attendanceSystemTeacherRouter.get("/test", async (req, res) => {
-   try {
-    const student_id = Number(req.query.student_id as string);
-
-    const query = await db
-      .selectFrom("Student")
-      .where("Student.student_id", "=", student_id)
-      .innerJoin("User", "User.user_id", "Student.user_id")
-      .innerJoin(
-        "Academic_Session",
-        "Academic_Session.academic_session_id",
-        "Student.academic_session_id"
-      )
-      .selectAll()
-      .execute();
-
-    return res.status(200).json(query[0]);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        name: "Invalid student id",
-        message: JSON.parse(error.message),
-      });
-    }
-    return res.status(500).json({ message: "Internal server error", error });
-  }
-  });
-
-  
-  
+});
 
 attendanceSystemTeacherRouter.get("/student-info", async (req, res) => {
          try {
