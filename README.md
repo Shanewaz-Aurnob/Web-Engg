@@ -1,4 +1,4 @@
-# Smart Attendance System for CU (University of Chittagong)
+# Web Engineering Large Scale project (Attendance System) Smart Attendance System for CU (University of Chittagong)
 
 ## Introduction
 This project is a smart attendance system developed for the Department of Computer Science and Engineering (CSE) at the University of Chittagong. It was part of a large-scale project involving multiple teams, and our focus was specifically on creating the attendance system.
@@ -74,3 +74,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Acknowledgements
 We would like to thank our department for the support and guidance throughout this project.
+
